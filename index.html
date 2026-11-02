@@ -108,6 +108,8 @@ body.fit #app{flex:1;min-height:0;display:flex;flex-direction:column}
 .sv .stat{padding:clamp(3px,.8vh,10px) 4px;border-radius:14px;border-top-width:3px}.sv .stat b{font-size:clamp(16px,3.2vh,28px);line-height:1.1}.sv .stat span{font-size:clamp(10px,1.5vh,13px)}
 .sv .lr .prog{flex:1 1 40px;min-width:30px;margin:0}.sv .lr .mut{font-size:clamp(9px,1.4vh,12px);white-space:nowrap;flex:none}
 @media(max-width:560px){.sv .stats{grid-template-columns:repeat(2,1fr)}.sv .lr .mut{display:none}}
+.wkbar{margin-bottom:10px;padding-bottom:8px;border-bottom:1px dashed var(--ln)}
+.wkc{margin:8px 0;border:1px solid var(--ln);border-radius:14px;padding:10px}.wkc.cur{border-color:var(--pr);background:rgba(11,143,126,.07)}
 #prt{display:none}
 @media print{@page{size:A4;margin:12mm}html,body{height:auto!important;overflow:visible!important;display:block!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body>*:not(#prt){display:none!important}#prt{display:block!important}}
 #cs{position:absolute;bottom:10px;right:24px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:99px;white-space:nowrap}#cs[data-s=err]{background:#d9534f}#cs[data-s=off]{opacity:.7}
@@ -134,17 +136,36 @@ const LB=[
 ['صفحة عرض الدرجات',[['podium','عنوان المراكز الأولى','🏆 أعلى المراكز'],['all','عنوان قائمة المشاركين','🚀 مسيرة المشاركين'],['search','نص خانة البحث','ابحث باسم المتسابق أو الحلقة...'],['pts','وحدة النقاط','نقطة'],['prev','زر السابق','السابق'],['next','زر التالي','التالي'],['noRes','رسالة عدم وجود نتائج','لا يوجد متسابقون مطابقون']]],
 ['صفحة الإحصائيات',[['stH','عنوان الإحصائيات','إحصائيات الميدان'],['stHalaqat','بطاقة: عدد الحلقات','عدد الحلقات'],['stStudents','بطاقة: إجمالي المتسابقين','إجمالي المتسابقين'],['stTotal','بطاقة: مجموع النقاط','مجموع النقاط'],['stAvg','بطاقة: متوسط النقاط','متوسط النقاط'],['stRank','عنوان ترتيب الحلقات','ترتيب الحلقات حسب النقاط'],['stuUnit','وحدة الطلاب','طالب'],['avgLbl','عبارة متوسط الطالب','متوسط الطالب']]],
 ['صفحة الرصد',[['tabItems','تبويب البنود','📋 البنود'],['tabAlerts','تبويب التنبيهات','📢 التنبيهات'],['tabSet','تبويب الإعدادات','⚙ الإعدادات'],['colStu','عمود الطالب','الطالب'],['dayTot','عمود مجموع اليوم','مجموع اليوم'],['grand','عمود المجموع الكلي','المجموع الكلي'],['addStu','زر إضافة طالب','+ إضافة طالب'],['newStu','نص خانة اسم الطالب','اسم الطالب الجديد...'],['rq','نص البحث السريع','بحث سريع عن طالب...'],['del','زر الحذف','حذف'],['clr','زر مسح رصد الطالب','مسح الرصد'],['noStu','رسالة لا يوجد طلاب','لا يوجد طلاب في هذه الحلقة'],['fullTip','تلميح زر ✓','رصد الدرجة كاملة']]],
-['البنود والتنبيهات',[['itemsH','عنوان إدارة البنود','إدارة بنود التقييم'],['allItems','تبويب بنود جميع الحلقات','بنود جميع الحلقات'],['ownItems','عبارة البنود المخصصة','بنود مخصصة'],['grade','كلمة درجة','درجة'],['newItem','نص اسم البند','اسم البند الجديد...'],['addItem','زر إضافة بند','+ إضافة بند'],['alertsH','عنوان التنبيهات','التنبيهات والإعلانات'],['newAlert','نص تنبيه جديد','اكتب تنبيهاً أو إعلاناً جديداً...'],['addAlert','زر إضافة تنبيه','+ إضافة تنبيه']]]
+['البنود والتنبيهات',[['itemsH','عنوان إدارة البنود','إدارة بنود التقييم'],['allItems','تبويب بنود جميع الحلقات','بنود جميع الحلقات'],['ownItems','عبارة البنود المخصصة','بنود مخصصة'],['grade','كلمة درجة','درجة'],['newItem','نص اسم البند','اسم البند الجديد...'],['addItem','زر إضافة بند','+ إضافة بند'],['alertsH','عنوان التنبيهات','التنبيهات والإعلانات'],['newAlert','نص تنبيه جديد','اكتب تنبيهاً أو إعلاناً جديداً...'],['addAlert','زر إضافة تنبيه','+ إضافة تنبيه']]],
+['الأسابيع',[['wkH','عنوان إدارة الأسابيع','📅 الأسابيع'],['newWk','نص اسم الأسبوع الجديد','اسم أسبوع جديد (اختياري)'],['addWk','زر إضافة أسبوع','+ أسبوع'],['delWk','زر حذف الأسبوع','حذف الأسبوع'],['wkCur','عبارة الأسبوع الحالي','الحالي'],['wkLocked','رسالة الأسبوع المقفل','🔒 هذا الأسبوع مقفل'],['wkOpen','زر فتح الأسبوع','فتح بالرمز']]],
+['منطقة الخطر',[['wipeBtn','زر حذف جميع البيانات','🗑 حذف جميع البيانات']]]
 ];
 const LD={};LB.forEach(g=>g[1].forEach(x=>LD[x[0]]=x[2]));
-const FT=[['autoSt','تدوير صفحات الإحصائيات تلقائيًا (عند زيادة الحلقات عن عدد الصفحة)'],['colors','ألوان الحلقات في القوائم (عند الإلغاء: لون موحد أبيض وأسود)'],['icoL','إظهار كأس إضافي على يسار الاسم'],['modeS','إظهار زر «عرض الدرجات»'],['modeT','إظهار زر «الإحصائيات»'],['theme','زر المظهر الليلي/النهاري'],['fs','زر ملء الشاشة'],['alerts','إظهار التنبيهات في عرض الدرجات'],['podium','إظهار منصة أول 3 مراكز'],['hqPod','إظهار اسم الحلقة على المنصة'],['list','إظهار قائمة بقية المشاركين'],['search','خانة البحث في القائمة'],['colHq','إظهار اسم الحلقة في القائمة'],['colRank','إظهار رقم الترتيب في القائمة'],['colPts','إظهار النقاط في القائمة'],['pager','أزرار التنقل بين الصفحات'],['stS','بطاقة: عدد الحلقات'],['stT','بطاقة: إجمالي المتسابقين'],['stP','بطاقة: مجموع النقاط'],['stA','بطاقة: متوسط النقاط'],['stR','ترتيب الحلقات في الإحصائيات'],['dayTotal','عمود مجموع اليوم في الرصد'],['grandTotal','عمود المجموع الكلي في الرصد'],['fullBtn','زر ✓ (الدرجة كاملة)'],['qsearch','البحث السريع في الرصد'],['delStu','زر حذف الطالب (يمين اسم الطالب)'],['clrRd','زر «مسح الرصد» (يسار الصف، يمسح درجات اليوم للطالب)'],['addStu','إضافة طالب جديد']];
+const FT=[['autoSt','تدوير صفحات الإحصائيات تلقائيًا (عند زيادة الحلقات عن عدد الصفحة)'],['colors','ألوان الحلقات في القوائم (عند الإلغاء: لون موحد أبيض وأسود)'],['icoL','إظهار كأس إضافي على يسار الاسم'],['modeS','إظهار زر «عرض الدرجات»'],['modeT','إظهار زر «الإحصائيات»'],['theme','زر المظهر الليلي/النهاري'],['fs','زر ملء الشاشة'],['alerts','إظهار التنبيهات في عرض الدرجات'],['podium','إظهار منصة أول 3 مراكز'],['hqPod','إظهار اسم الحلقة على المنصة'],['list','إظهار قائمة بقية المشاركين'],['search','خانة البحث في القائمة'],['colHq','إظهار اسم الحلقة في القائمة'],['colRank','إظهار رقم الترتيب في القائمة'],['colPts','إظهار النقاط في القائمة'],['pager','أزرار التنقل بين الصفحات'],['stS','بطاقة: عدد الحلقات'],['stT','بطاقة: إجمالي المتسابقين'],['stP','بطاقة: مجموع النقاط'],['stA','بطاقة: متوسط النقاط'],['stR','ترتيب الحلقات في الإحصائيات'],['dayTotal','عمود مجموع اليوم في الرصد'],['grandTotal','عمود المجموع الكلي في الرصد'],['fullBtn','زر ✓ (الدرجة كاملة)'],['qsearch','البحث السريع في الرصد'],['delStu','زر حذف الطالب (يمين اسم الطالب)'],['clrRd','زر «مسح الرصد» (يسار الصف، يمسح درجات اليوم للطالب)'],['addStu','إضافة طالب جديد'],['wkBar','شريط الأسابيع في الرصد'],['wkEdit','أزرار إضافة وحذف الأسبوع في الرصد'],['undoBtns','أزرار التراجع ↩ وإلغاء التراجع ↪ في الرصد']];
 const FD={perPage:10};FT.forEach(x=>FD[x[0]]=true);FD.modeS=FD.modeT=true;FD.autoSt=false;FD.statsPer=10;
 const DEFD=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس'];
 const defItems=()=>['الحضور','الحفظ','المراجعة','السلوك'].map(n=>({id:uid(),name:n,max:10}));
 function init(){return{halaqat:['حلقة الإمام أحمد بن حنبل','حلقة الإمام ابن الجوزي','حلقة الإمام ابن كثير','حلقة الإمام الشاطبي','حلقة الإمام مالك','حلقة التلقين'].map((n,i)=>({id:'h'+(i+1),name:n,items:defItems(),students:[]})),locks:{}}}
+/* ملف نسخة بيانات (HTML): عند أول فتح لهذه النسخة تُحمَّل بياناتها كاملة (البيانات + سجل التغييرات + النسخ الاحتياطية المحلية) */
+(function(){try{const el=document.getElementById('md-snapshot');if(!el)return;const d=JSON.parse(el.textContent);if(!d||!d.S||!d.S.halaqat)return;const mk='maydan_seed_ts';if(localStorage.getItem(mk)===String(d.ts))return;
+localStorage.setItem('maydan',JSON.stringify(d.S));
+if(Array.isArray(d.hist))localStorage.setItem('maydan_hist',JSON.stringify(d.hist));
+if(d.bakPre)localStorage.setItem('maydan_bak_pre_weeks',d.bakPre);
+if(d.bakWipe)localStorage.setItem('maydan_bak_before_wipe',d.bakWipe);
+if(d.theme)localStorage.setItem('mdth',d.theme);
+localStorage.setItem(mk,String(d.ts));window._seeded=1}catch(e){}})();
 let S;try{S=JSON.parse(localStorage.getItem('maydan'))}catch(e){}
+/* نسخة أمان تلقائية لبيانات ما قبل نظام الأسابيع (تُحفظ مرة واحدة قبل أي ترحيل) */
+function preBak(raw){try{if(raw&&!localStorage.getItem('maydan_bak_pre_weeks'))localStorage.setItem('maydan_bak_pre_weeks',raw)}catch(e){}}
+try{const r=localStorage.getItem('maydan');if(r&&S&&S.halaqat&&!S.weeks)preBak(r)}catch(e){}
 if(!S||!S.halaqat)S=init();
-function norm(){S.settings=Object.assign({auto:false,secs:8,title:'',dateMode:'none'},S.settings||{});
+/* بنود وأيام كل أسبوع: الأسبوع الحالي = الإعداد الحي (S.items / h.items / h.own / S.days)، وبقية الأسابيع تحفظ نسختها في w.cfg ولا تتأثر بالتعديل */
+const cl=o=>o===undefined?undefined:JSON.parse(JSON.stringify(o));
+const liveCfg=()=>({items:S.items,hitems:Object.fromEntries(S.halaqat.filter(h=>h.own&&h.items).map(h=>[h.id,h.items])),days:S.days});
+const snapCfg=()=>cl(liveCfg());
+function loadCfg(c){S.items=cl(c.items);S.days=cl(c.days);S.halaqat.forEach(h=>{const hi=c.hitems&&c.hitems[h.id];if(hi){h.own=true;h.items=cl(hi)}else h.own=false})}
+function switchCur(id){if(id===S.curWeek)return;const o=S.weeks.find(w=>w.id===S.curWeek),n=S.weeks.find(w=>w.id===id);if(!n)return;if(o)o.cfg=snapCfg();S.curWeek=id;if(n.cfg){loadCfg(n.cfg);delete n.cfg}}
+function norm(){S.settings=Object.assign({auto:false,secs:8,title:'',dateMode:'none',onlyCur:false},S.settings||{});
 S.labels=S.labels||{};if(S.settings.title&&!S.labels.title&&S.settings.title!=='ميدان التحدي')S.labels.title=S.settings.title;
 S.feat=Object.assign({},FD,S.feat||{});if(!S.mig2){S.feat.modeT=true;S.feat.modeS=true;S.mig2=1}
 S.days=S.days||DEFD.map(n=>({n,on:true}));
@@ -153,9 +174,114 @@ if(!S.items){S.halaqat.forEach(h=>{if(h.own===undefined)h.own=/التلقين/.t
  const gs=S.halaqat.filter(h=>!h.own);S.items=gs.length?gs[0].items.map(i=>({...i})):defItems();
  gs.forEach((h,hi)=>{if(hi===0)return;h.items.forEach((it,k)=>{const g=S.items[k];if(!g){S.items.push({...it});return}
   if(g.id!==it.id)h.students.forEach(st=>Object.values(st.scores||{}).forEach(d=>{if(it.id in d){d[g.id]=d[it.id];delete d[it.id]}}))})})}
+/* الأسابيع: إنشاء أسبوع افتراضي وترحيل الدرجات القديمة (المفتاح رقم اليوم) إلى الأسبوع الأول */
+if(!Array.isArray(S.weeks)||!S.weeks.length)S.weeks=[{id:'w1',name:'الأسبوع 1',show:true}];
+if(!S.curWeek||!S.weeks.some(w=>w.id===S.curWeek))S.curWeek=S.weeks[0].id;
+if(!S.settings.wkMode)S.settings.wkMode=S.settings.onlyCur?'cur':(S.weeks.some(w=>w.show===false)?'custom':'all');
+S.weeks.forEach(w=>{if(w.id===S.curWeek){if(w.cfg)delete w.cfg}else if(!w.cfg)w.cfg=snapCfg()});
+S.halaqat.forEach(h=>(h.students||[]).forEach(st=>{const sc=st.scores||{},ks=Object.keys(sc).filter(k=>/^\d+$/.test(k));
+ if(ks.length){const w=S.weeks[0].id;sc[w]=sc[w]||{};ks.forEach(k=>{sc[w][k]=Object.assign(sc[w][k]||{},sc[k]);delete sc[k]});st.scores=sc;window._mg=1}}));
 }
 norm();
-const save=()=>{try{localStorage.setItem('maydan',JSON.stringify(S))}catch(e){}if(window.cloudPush)window.cloudPush()};
+/* ===== سجل التغييرات: تسجيل تلقائي لكل تعديل بمقارنة الحالة قبل/بعد، مع تراجع وإلغاء تراجع عام ومخصص (محفوظ في هذا الجهاز) ===== */
+const HEX=['locks','seed1','mig2'];
+var HP=null,HPs='',HA=1,HL=[],hf='all',hLim=40;
+try{HL=JSON.parse(localStorage.getItem('maydan_hist')||'[]');if(!Array.isArray(HL))HL=[]}catch(e){HL=[]}
+function hSnap(){const o=cl(S);HEX.forEach(k=>delete o[k]);return o}
+function histSync(){try{HP=hSnap();HPs=JSON.stringify(HP)}catch(e){}}
+function hd(a,b,p,out){
+ if(a===b)return;
+ if(p[0]==='halaqat'&&p[4]==='scores'&&p.length<8){if(a===undefined&&b&&typeof b==='object')a={};else if(b===undefined&&a&&typeof a==='object')b={}}
+ const oa=a!==null&&typeof a==='object',ob=b!==null&&typeof b==='object';
+ if(!oa||!ob||Array.isArray(a)!==Array.isArray(b)){out.push({p,o:a,n:b});return}
+ if(Array.isArray(a)){
+  const keyed=(a.length||b.length)&&a.concat(b).every(x=>x&&typeof x==='object'&&x.id!==undefined);
+  if(!keyed){if(JSON.stringify(a)!==JSON.stringify(b))out.push({p,o:a,n:b});return}
+  const na=new Map(a.map(x=>[x.id,x])),nb=new Map(b.map(x=>[x.id,x]));
+  a.forEach((x,i)=>{const y=nb.get(x.id);if(y===undefined)out.push({p:p.concat([{id:x.id}]),o:x,ix:i});else hd(x,y,p.concat([{id:x.id}]),out)});
+  b.forEach((x,i)=>{if(!na.has(x.id))out.push({p:p.concat([{id:x.id}]),n:x,ix:i})});
+  return}
+ new Set(Object.keys(a).concat(Object.keys(b))).forEach(k=>{if(p.length===0&&HEX.includes(k))return;hd(a[k],b[k],p.concat([k]),out)})}
+function hget(r,p){let c=r;for(const k of p){if(c==null)return undefined;c=typeof k==='object'?(Array.isArray(c)?c.find(x=>x.id===k.id):undefined):c[k]}return c}
+function hset(r,p,v,ix){let c=r;
+ for(let i=0;i<p.length-1;i++){const k=p[i];let nx=typeof k==='object'?(Array.isArray(c)?c.find(x=>x.id===k.id):undefined):c[k];
+  if(nx==null){if(v===undefined||typeof k==='object')return;c[k]=typeof p[i+1]==='object'?[]:{};nx=c[k]}c=nx}
+ const k=p[p.length-1];
+ if(typeof k==='object'){if(!Array.isArray(c))return;const i=c.findIndex(x=>x.id===k.id);if(v===undefined){if(i>=0)c.splice(i,1)}else if(i>=0)c[i]=cl(v);else c.splice(Math.min(ix==null?c.length:ix,c.length),0,cl(v))}
+ else{if(v===undefined)delete c[k];else c[k]=cl(v)}}
+const hv=v=>v===undefined?'—':(v!==null&&typeof v==='object'?'…':String(v));
+const hNm=(P,C,k,id)=>{const g=R=>{const x=(R[k]||[]).find(y=>y.id===id);return x&&x.name};return g(C)||g(P)||String(id)};
+const hSt=(P,C,hid,sid)=>{const g=R=>{const h=(R.halaqat||[]).find(x=>x.id===hid),s=h&&(h.students||[]).find(x=>x.id===sid);return s&&s.name};return g(C)||g(P)||sid};
+function hIt(P,C,id){let r=null;[C,P].forEach(R=>{if(r)return;const lk=a=>(a||[]).find(x=>x.id===id);let x=lk(R.items);(R.halaqat||[]).forEach(h=>{x=x||lk(h.items)});(R.weeks||[]).forEach(w=>{if(w.cfg){x=x||lk(w.cfg.items);Object.values(w.cfg.hitems||{}).forEach(a=>{x=x||lk(a)})}});if(x)r=x.name});return r||id}
+function hDy(P,C,wid,d){let ds=null;[C,P].forEach(R=>{if(ds)return;if(R.curWeek===wid)ds=R.days;else{const w=(R.weeks||[]).find(x=>x.id===wid);if(w&&w.cfg)ds=w.cfg.days}});return (ds&&ds[d]&&ds[d].n)||('اليوم '+(+d+1))}
+function hDesc(c,P,C){
+ const p=c.p,id=i=>p[i]&&p[i].id,add=c.o===undefined,del=c.n===undefined,cur=C.curWeek;
+ if(p[0]==='halaqat'&&id(1)){const hid=id(1),hn=hNm(P,C,'halaqat',hid),tg=['h:'+hid];
+  if(p.length===2)return{l:(add?'إضافة حلقة «':'حذف حلقة «')+hn+'»',t:tg,r:1};
+  if(p[2]==='students'&&id(3)){const sid=id(3),sn=hSt(P,C,hid,sid);tg.push('st:'+sid);
+   if(p.length===4)return{l:(add?'إضافة طالب «':'حذف طالب «')+sn+'» — '+hn,t:tg,r:1};
+   if(p[4]==='scores'&&p.length===8){const wid=p[5];tg.push('w:'+wid);return{l:'رصد «'+sn+'» — '+hIt(P,C,p[7])+' — '+hNm(P,C,'weeks',wid)+' / '+hDy(P,C,wid,p[6])+': '+hv(c.o)+' ← '+hv(c.n),t:tg,r:1}}
+   if(p[4]==='scores'){if(p[5])tg.push('w:'+p[5]);return{l:'تعديل درجات «'+sn+'»',t:tg,r:1}}
+   return{l:'تعديل بيانات طالب «'+sn+'»'+(p[4]==='name'?': '+hv(c.o)+' ← '+hv(c.n):''),t:tg,r:2}}
+  if(p[2]==='name')return{l:'إعادة تسمية حلقة: '+hv(c.o)+' ← '+hv(c.n),t:tg,r:2};
+  if(p[2]==='color')return{l:'لون الحلقة «'+hn+'»',t:tg.concat('sec:colors'),r:3};
+  if(p[2]==='own')return{l:'بنود مخصصة لحلقة «'+hn+'»: '+(c.n?'تفعيل':'إلغاء'),t:tg.concat('sec:items','w:'+cur),r:4};
+  if(p[2]==='items')return{l:'تعديل بنود حلقة «'+hn+'»',t:tg.concat('sec:items','w:'+cur),r:4};
+  return{l:'تعديل حلقة «'+hn+'»',t:tg,r:3}}
+ if(p[0]==='items'&&id(1)){const tg=['sec:items','w:'+cur],nm=hIt(P,C,id(1));
+  if(p.length===2)return{l:(add?'إضافة بند «':'حذف بند «')+nm+'»',t:tg,r:4};
+  return{l:'تعديل بند «'+nm+'» ('+(p[2]==='max'?'الدرجة':'الاسم')+'): '+hv(c.o)+' ← '+hv(c.n),t:tg,r:4}}
+ if(p[0]==='weeks'&&id(1)){const wid=id(1),wn=hNm(P,C,'weeks',wid),tg=['sec:weeks','w:'+wid];
+  if(p.length===2)return{l:(add?'إضافة أسبوع «':'حذف أسبوع «')+wn+'»',t:tg,r:0};
+  if(p[2]==='cfg')return{l:'بنود وأيام أسبوع «'+wn+'»',t:['sec:weeks'],r:6};
+  if(p[2]==='name')return{l:'إعادة تسمية أسبوع: '+hv(c.o)+' ← '+hv(c.n),t:tg,r:2};
+  if(p[2]==='archived')return{l:(c.n?'حذف (أرشفة) أسبوع «':'استرجاع أسبوع «')+wn+'»',t:tg,r:0};
+  return{l:'تعديل أسبوع «'+wn+'»',t:tg,r:3}}
+ if(p[0]==='curWeek')return{l:'الأسبوع الحالي: '+hNm(P,C,'weeks',c.o)+' ← '+hNm(P,C,'weeks',c.n),t:['sec:weeks'],r:0};
+ if(p[0]==='days')return{l:'تعديل أيام الرصد (الأسبوع الحالي)',t:['sec:days','w:'+cur],r:4};
+ if(p[0]==='alerts')return{l:add?'إضافة تنبيه':del?'حذف تنبيه':'تعديل تنبيه',t:['sec:alerts'],r:3};
+ if(p[0]==='labels')return{l:'تغيير مسمّى «'+p[1]+'»',t:['sec:labels'],r:3};
+ if(p[0]==='feat'){const f=FT.find(x=>x[0]===p[1]);return{l:'خيار الإظهار: '+(f?f[1]:p[1])+' ('+hv(c.o)+' ← '+hv(c.n)+')',t:[p[1]==='colors'?'sec:colors':'sec:feat'],r:3}}
+ if(p[0]==='settings')return p[1]==='wkMode'?{l:'وضع عرض الأسابيع: '+hv(c.o)+' ← '+hv(c.n),t:['sec:weeks'],r:3}:{l:'إعدادات: '+p[1],t:['sec:settings'],r:3};
+ return{l:'تعديل: '+p.map(x=>typeof x==='object'?x.id:x).join(' / '),t:['sec:settings'],r:5}}
+function hEntry(out,P,C){const ds=out.map(c=>hDesc(c,P,C));let b=ds[0];ds.forEach(d=>{if(d.r<b.r)b=d});
+ return{id:uid(),t:Date.now(),tg:[...new Set(ds.flatMap(d=>d.t))],lb:b.l+(out.length>1?' (+'+(out.length-1)+')':''),ch:out,u:0}}
+function hStore(){let s=JSON.stringify(HL);while(s.length>2e6&&HL.length>20){HL.shift();s=JSON.stringify(HL)}
+ try{localStorage.setItem('maydan_hist',s)}catch(e){HL.splice(0,Math.ceil(HL.length/3));try{localStorage.setItem('maydan_hist',JSON.stringify(HL))}catch(e2){}}}
+function histRec(){if(HA)return;let cur;try{cur=hSnap()}catch(e){return}
+ const cs=JSON.stringify(cur);if(!HP){HP=cur;HPs=cs;return}if(cs===HPs)return;
+ const out=[];hd(HP,cur,[],out);
+ if(out.length){HL.push(hEntry(out,HP,cur));while(HL.length>500)HL.shift();hStore()}
+ HP=cur;HPs=cs}
+const hMatch=(e,f)=>f==='all'||(e.tg||[]).includes(f);
+function hCand(f,redo){let b=null;for(let i=HL.length-1;i>=0;i--){const e=HL[i];if(!hMatch(e,f))continue;if(!redo){if(!e.u)return e}else if(e.u&&(!b||(e.ut||0)>(b.ut||0)))b=e}return b}
+function histKeys(e){const k=[];(e.tg||[]).forEach(t=>{if(t.slice(0,2)==='h:')k.push('h_'+t.slice(2));else if(t.slice(0,2)==='w:')k.push('w_'+t.slice(2))});return k.filter(x=>S.locks[x]&&S.locks[x].on)}
+function histGate(e,cb){const ks=histKeys(e).filter(k=>locked(k)),go=()=>{if(!ks.length)return cb();gate(ks.shift(),go)};go()}
+function histRun(e,redo){histGate(e,()=>{
+ let conf=0;e.ch.forEach(c=>{const cur=hget(S,c.p),exp=redo?c.o:c.n;if(JSON.stringify(cur)!==JSON.stringify(exp))conf++});
+ const go=()=>{HA=1;try{(redo?e.ch:e.ch.slice().reverse()).forEach(c=>hset(S,c.p,redo?c.n:c.o,c.ix))}catch(err){console.error(err)}
+  e.u=redo?0:1;if(redo)delete e.ut;else e.ut=Date.now();
+  norm();if(tab!=='set'&&tab!=='items'&&tab!=='alerts'&&!H(tab))tab=S.halaqat[0]?S.halaqat[0].id:'set';
+  histSync();HA=0;hStore();save();render()};
+ if(conf)ask('تغيّرت '+conf+' قيمة بعد هذا التعديل، والمتابعة ستكتب فوقها. هل تتابع؟',go,{yes:'متابعة'});else go()})}
+function histUndo(f){const e=hCand(f,0);if(e)histRun(e,false)}
+function histRedo(f){const e=hCand(f,1);if(e)histRun(e,true)}
+function histOne(id){const e=HL.find(x=>x.id===id);if(e)histRun(e,!!e.u)}
+function histClear(){ask('مسح سجل التغييرات بالكامل؟ (لا يتأثر أي رصد أو بيانات)',()=>{HL=[];hStore();render()},{red:1,yes:'مسح'})}
+const hTm=t=>{try{return new Date(t).toLocaleString('ar-SA-u-ca-gregory-nu-latn',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}};
+function hOpts(){const o=(v,l)=>`<option value="${esc(v)}" ${hf===v?'selected':''}>${esc(l)}</option>`;
+ return o('all','كل شيء (عام)')+'<optgroup label="الحلقات">'+S.halaqat.map(h=>o('h:'+h.id,h.name)).join('')+'</optgroup><optgroup label="الأسابيع">'+S.weeks.map(w=>o('w:'+w.id,w.name)).join('')+'</optgroup><optgroup label="الأقسام">'+[['sec:items','البنود'],['sec:days','الأيام'],['sec:weeks','إعدادات الأسابيع'],['sec:alerts','التنبيهات'],['sec:labels','المسميات'],['sec:feat','خيارات الإظهار'],['sec:colors','الألوان'],['sec:settings','إعدادات أخرى']].map(x=>o(x[0],x[1])).join('')+'</optgroup><optgroup label="الطلاب">'+S.halaqat.flatMap(h=>h.students.map(s=>o('st:'+s.id,s.name+' — '+h.name))).join('')+'</optgroup>'}
+function histV(){
+ const cu=hCand(hf,0),cr=hCand(hf,1),M=HL.filter(e=>hMatch(e,hf)),sl=M.slice(-hLim).reverse();
+ return `<div class="card"><h2>🕘 سجل التغييرات والتراجع</h2><div class="mut" style="margin-bottom:8px">كل تعديل يُسجَّل تلقائيًا في هذا الجهاز (آخر 500 تغيير). اختر «كل شيء» للتراجع العام، أو اختر حلقة أو أسبوعًا أو طالبًا أو قسمًا لتتراجع داخله فقط. رموز الأقفال لا تُسجَّل ولا يمكن التراجع عنها.</div>`+
+ `<div class="row"><select onchange="hf=this.value;hLim=40;render()" style="flex:1;min-width:200px">${hOpts()}</select></div>`+
+ `<div class="row"><button class="btn" ${cu?'':'disabled'} onclick="histUndo(hf)">↩ تراجع</button><button class="btn g" ${cr?'':'disabled'} onclick="histRedo(hf)">↪ إلغاء التراجع</button><span class="mut">${M.length} تغيير</span></div>`+
+ (cu?`<div class="mut">التراجع التالي: ${esc(cu.lb)}</div>`:'')+(cr?`<div class="mut">إلغاء التراجع التالي: ${esc(cr.lb)}</div>`:'')+
+ (sl.length?sl.map(e=>`<div class="line" ${e.u?'style="opacity:.6"':''}><div style="flex:1;min-width:180px"><div style="font-weight:700${e.u?';text-decoration:line-through':''}">${esc(e.lb)}</div><div class="mut">${esc(hTm(e.t))}${e.u?' • تم التراجع':''}</div></div><button class="btn ${e.u?'':'g'}" onclick="histOne('${e.id}')">${e.u?'↪ إلغاء التراجع':'↩ تراجع'}</button></div>`).join(''):'<div class="empty">لا توجد تغييرات مسجّلة</div>')+
+ (M.length>hLim?`<div class="row" style="justify-content:center;margin-top:8px"><button class="btn g" onclick="hLim+=40;render()">عرض المزيد</button></div>`:'')+
+ `<div class="row" style="margin-top:10px"><button class="btn x" onclick="histClear()">مسح السجل</button></div></div>`}
+const save=()=>{try{localStorage.setItem('maydan',JSON.stringify(S))}catch(e){}histRec();if(window.cloudPush)window.cloudPush()};
+if(window._mg){window._mg=0;save()}
 const SEED={"أحمد بن حنبل":["أنس عبده محمد","جواد ناصر الزلمة","حسن ملهم فرحان","خالد تركي باوزير","رائد محمد آدم","سالم ملهم فرحان","سعد محمد الهويمل","سلمان مشعل المبارك","صادق عابد درجان","عبدالرحمن عمار الصهباني","عبدالله محمد شمسان","عمر منصور هوساوي","محمد أحمد حمندوش","محمد تركي باوزير","يزن نور القيوم حمزة"],"ابن الجوزي":["ابراهيم محمد الجمعة","حسان أمين العواضي","حمزة عبده الرخمي","حميد بشير الحلياني","راشد عبدالرحمن بن خنين","عبدالرحمن خالد الجمعة","عبدالرحمن عبدالعزيز الهديب","عبدالرحمن فهد النجار","عبدالملك بن عبدالله العقيل","عبدالملك سعد القحطاني","غنام ماجد العتيبي","محمد عبداللّٰه الكثيري"],"ابن كثير":["إياد بن عبدالرحمن العلوي","بسام عبدالملك الشقير","تركي فهد النجار","حسام سياف قحطان","راكان خالد العتيبي","سعد ابراهيم العشبان","سعود عبدالعزيز النويعم","عبدالمجيد يحيى الحسيني","عبدالملك يحيى الحسيني","عبد الوهاب عبدالله بافضل","فيصل سعود العمر","مازن بن ناصر المحسن","مالك فارس الكثيري","مبارك مشعل المبارك","محمد تركي الجريوي","محمد خالد الموسى","محمد عثمان الضويان","يزيد محمد الشجاعي","يوسف خالد الجمعة"],"الشاطبي":["أحمد عبدالكريم الناطف","أحمد محمود عبدالهادي","اسامة محمد السالم","تركي علي أحمد سلام","حسن عبدالمالك رحمة","خطاب عبدالرقيب علوان","ريان محمد آدم","سعيد رضوان البج","سعيد عبدالرحمن باوزير","سند أحمد هارون","عبدالملك هارون أبو بكر","فادي محمد السالم","فراس طه علي سيف","قصي ناصر الزلمة","قيس حسين الرشيدي","ماهر محمود فضل حق","محمد طه علي سيف","محمد عمار درهم","وائل جمال علي سلام","ورد رضوان البج","وسام عبدالمنعم محمد"],"مالك":["أنس عبدالإله علي الحداد","أوس أنس محمد","امران عبدالرحمن ابرار","أويس أنس محمد","توفيق عبدالمنعم محمد","زياد محمد الجمعة","سطام مشعل المبارك","سلمان عبد الرحمن باوزير","عابد محمد أبو حسن","عبدلعزيز رضوان علي","عبدالرحمن ناصر عثمان","عبدالوهاب سلطان سلطان","عدي قايد مهيوب","علي عابد محمد درجان","فياض أحمد العلاوي","محمد نور خوجة","مصطفى محمد البقلاوي","وسيم جمال علي سلام","يوسف محمود سويفي"],"التلقين":["أنس محمد الأحمد","تميم عبدالكريم محمد","حارث محمد الشجاعي","حمزة بن محمد جانيش","حميدي محمد الأحمد","خالد شمس الدين قنديل","عثمان ملهم فرحان","غيث أسامة يحيى"]};
 function seedMissing(){let n=0;for(const k in SEED){const h=S.halaqat.find(x=>x.name.includes(k));if(!h)continue;SEED[k].forEach(nm=>{if(!h.students.some(st=>st.name===nm)){h.students.push({id:uid(),name:nm,scores:{},notes:{}});n++}})}return n}
 if(!S.seed1){seedMissing();S.seed1=1;save()}
@@ -165,7 +291,15 @@ let mode='s',tab=S.halaqat[0]?S.halaqat[0].id:'set',day=0,pg=0,q='',rq='',itH='g
 const H=id=>S.halaqat.find(h=>h.id===id);
 const hc=hi=>{if(!F('colors'))return 'var(--uni)';const h=S.halaqat[hi];return (h&&h.color)||RC[hi%8]};
 const itemsOf=h=>h.own?h.items:S.items;
-const total=s=>Object.values(s.scores||{}).reduce((a,d)=>a+Object.values(d).reduce((x,v)=>x+(+v||0),0),0);
+const cfgOf=id=>{if(id===S.curWeek)return liveCfg();const w=S.weeks.find(x=>x.id===id);return (w&&w.cfg)||liveCfg()};
+const itemsFor=(h,wid)=>{const c=cfgOf(wid);return (c.hitems&&c.hitems[h.id])||c.items||[]};
+const curWName=()=>{const w=S.weeks.find(x=>x.id===S.curWeek);return w?w.name:''};
+const total=s=>Object.values(s.scores||{}).reduce((a,w)=>a+Object.values(w).reduce((b,d)=>b+Object.values(d).reduce((x,v)=>x+(+v||0),0),0),0);
+let wk=null;
+const wkMode=()=>S.settings.wkMode||'all';
+const wkVis=w=>!w.archived&&(w.id===S.curWeek||wkMode()==='all'||(wkMode()==='custom'&&w.show!==false));
+const visWk=()=>S.weeks.filter(wkVis);
+function curW(){if(!F('wkBar')){wk=S.curWeek;return wk}if(!wk||!visWk().some(w=>w.id===wk))wk=S.curWeek;return wk}
 const all=()=>S.halaqat.flatMap((h,hi)=>h.students.map(s=>({name:s.name,hq:h.name,hi,pts:total(s)}))).sort((a,b)=>b.pts-a.pts);
 /* مظهر */
 function setTheme(t){document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;$('tg').textContent=t==='dark'?'☀️':'🌙'}
@@ -230,17 +364,55 @@ function rasdV(){
  if(tab==='items')return h+itemsV();
  if(tab==='alerts')return h+alertsV();
  const x=H(tab);if(!x)return h+'<div class="card empty">—</div>';
- const ds=S.days.map((d,i)=>({...d,i})).filter(d=>d.on);if(ds.length&&!ds.some(d=>d.i===day))day=ds[0].i;
- const IT=itemsOf(x),st=rq?x.students.filter(s=>s.name.includes(rq)):x.students;
- h+=`<div class="card"><div class="row">`+ds.map(d=>`<button class="chip ${day===d.i?'on':''}" onclick="day=${d.i};render()">${esc(d.n)}</button>`).join('')+'</div>'+
+ const ds=cfgOf(curW()).days.map((d,i)=>({...d,i})).filter(d=>d.on);if(ds.length&&!ds.some(d=>d.i===day))day=ds[0].i;
+ const IT=itemsFor(x,curW()),st=rq?x.students.filter(s=>s.name.includes(rq)):x.students;
+ const cw=curW(),vw=visWk();
+ const wbar=F('wkBar')?`<div class="wkbar"><div class="row">`+vw.map(w=>`<button class="chip ${cw===w.id?'on':''}" onclick="pickWk('${w.id}')">${w.id===S.curWeek?'★ ':''}${esc(w.name)}${LKI('w_'+w.id)}</button>`).join('')+'</div>'+(F('wkEdit')?`<div class="row" style="margin:0"><button class="btn" onclick="addWk('nw')">${esc(T('addWk'))}</button><button class="btn x" onclick="delWk('${cw}')">${esc(T('delWk'))}</button></div>`:'')+'</div>':'';
+ const hu=hCand('all',0),hr=hCand('all',1);
+ const uq=F('undoBtns')?`<div style="float:left;display:flex;gap:6px;margin:0 8px 8px 0"><button class="btn g" style="padding:6px 12px;font-size:13px;white-space:nowrap" ${hu?'':'disabled'} onclick="histUndo('all')" title="${esc(hu?hu.lb:'تراجع')}">↩ تراجع</button><button class="btn g" style="padding:6px 12px;font-size:13px;white-space:nowrap" ${hr?'':'disabled'} onclick="histRedo('all')" title="${esc(hr?hr.lb:'إلغاء التراجع')}">↪ إلغاء التراجع</button></div>`:'';
+ if(locked('w_'+cw))return h+`<div class="card">${uq}${wbar}<div class="empty" style="font-weight:700">${esc(T('wkLocked'))}<br><button class="btn" style="margin-top:8px" onclick="pickWk('${cw}')">${esc(T('wkOpen'))}</button></div></div>`;
+ h+=`<div class="card">${uq}${wbar}<div class="row">`+ds.map(d=>`<button class="chip ${day===d.i?'on':''}" onclick="day=${d.i};render()">${esc(d.n)}</button>`).join('')+'</div>'+
  (F('qsearch')?`<div class="row"><input id="rq" style="width:100%" placeholder="${esc(T('rq'))}" value="${esc(rq)}" oninput="rq=this.value;render();var e=document.getElementById('rq');e.focus();e.setSelectionRange(rq.length,rq.length)"></div>`:'')+
  `<div class="wrap"><table><tr><th>${esc(T('colStu'))}</th>`+IT.map(it=>`<th>${esc(it.name)}<br><small>(${it.max})</small></th>`).join('')+(F('dayTotal')?`<th>${esc(T('dayTot'))}</th>`:'')+(F('grandTotal')?`<th>${esc(T('grand'))}</th>`:'')+(F('clrRd')?'<th></th>':'')+'</tr>'+
- (st.length?st.map(s=>{const d=(s.scores||{})[day]||{},dt=Object.values(d).reduce((a,v)=>a+(+v||0),0);
+ (st.length?st.map(s=>{const d=((s.scores||{})[cw]||{})[day]||{},dt=Object.values(d).reduce((a,v)=>a+(+v||0),0);
   return `<tr><td style="white-space:nowrap">${F('delStu')?`<button class="btn x" style="padding:3px 8px;font-size:12px;margin-inline-end:8px" onclick="delSt('${x.id}','${s.id}')">${esc(T('del'))}</button>`:''}${esc(s.name)}</td>`+IT.map(it=>`<td><div class="sc"><input type="number" min="0" max="${it.max}" value="${d[it.id]??''}" onchange="setSc('${x.id}','${s.id}','${it.id}',this.value)">${F('fullBtn')?`<button class="ck${d[it.id]==it.max?' ok':''}" title="${esc(T('fullTip'))}" onclick="fullSc('${x.id}','${s.id}','${it.id}')">✓</button>`:''}</div></td>`).join('')+(F('dayTotal')?`<td>${dt}</td>`:'')+(F('grandTotal')?`<td><b style="color:var(--pr)">${total(s)}</b></td>`:'')+(F('clrRd')?`<td><button class="btn g" style="padding:5px 9px;font-size:12px;white-space:nowrap" onclick="clrRd('${x.id}','${s.id}')">${esc(T('clr'))}</button></td>`:'')+'</tr>'}).join(''):`<tr><td colspan="${IT.length+4}" class="empty">${esc(T('noStu'))}</td></tr>`)+'</table></div>'+
  (F('addStu')?`<div class="row" style="margin-top:12px"><input id="ns" placeholder="${esc(T('newStu'))}" style="flex:1;max-width:320px" onkeydown="if(event.key==='Enter')addSt('${x.id}')"><button class="btn" onclick="addSt('${x.id}')">${esc(T('addStu'))}</button></div>`:'')+'</div>';
  return h}
-function setSc(h,s,i,v){const st=H(h).students.find(a=>a.id===s);st.scores=st.scores||{};st.scores[day]=st.scores[day]||{};if(v==='')delete st.scores[day][i];else st.scores[day][i]=+v;save();render()}
-function fullSc(h,s,i){const x=H(h),st=x.students.find(a=>a.id===s),it=itemsOf(x).find(a=>a.id===i),cur=((st.scores||{})[day]||{})[i];setSc(h,s,i,cur==it.max?'':String(it.max))}
+/* ===== الأسابيع ===== */
+function pickWk(id){gate('w_'+id,()=>{wk=id;render()})}
+function addWk(iid){const el=$(iid);let v=el?el.value.trim():'';
+ if(!v){let n=S.weeks.reduce((m,w)=>{const r=/(\d+)\s*$/.exec(w.name);return Math.max(m,r?+r[1]:0)},0);n=Math.max(S.weeks.length,n)+1;while(S.weeks.some(w=>w.name==='الأسبوع '+n))n++;v='الأسبوع '+n}
+ /* الأسبوع الجديد يصير هو الحالي تلقائيًا ويرث بنود وأيام الأسبوع الحالي قبله، والأسبوع السابق يحتفظ بنسخته */
+ const w={id:'w'+uid(),name:v,show:true},o=S.weeks.find(x=>x.id===S.curWeek);if(o)o.cfg=snapCfg();S.weeks.push(w);S.curWeek=w.id;wk=w.id;save();render()}
+function delWk(id){
+ const act=S.weeks.filter(w=>!w.archived);
+ if(act.length<2)return toast('يجب بقاء أسبوع واحد ظاهر');
+ if(locked('w_'+id))return gate('w_'+id,()=>delWk(id));
+ const i=S.weeks.findIndex(w=>w.id===id);if(i<0)return;const w=S.weeks[i];
+ ask('حذف «'+w.name+'» من القائمة؟ لن تُحذف أي درجة: يُنقل إلى «الأسابيع المحذوفة» في الإعدادات وتبقى نقاطه محسوبة ويمكن استرجاعه.',()=>{
+  const wasCur=S.curWeek===id;w.archived=true;
+  if(wasCur){const nx=S.weeks.slice(i+1).concat(S.weeks.slice(0,i)).find(x=>!x.archived);switchCur(nx.id)}
+  if(wk===id)wk=S.curWeek;
+  save();render();
+  undoToast('تم حذف «'+w.name+'» (محفوظ في الأرشيف)',()=>{const y=S.weeks.find(x=>x.id===id);if(!y)return;delete y.archived;if(wasCur)switchCur(id);save();render()})},{red:1,yes:'حذف'})}
+function restoreWk(id){const w=S.weeks.find(x=>x.id===id);if(!w)return;delete w.archived;w.show=true;save();render()}
+function setCur(id){switchCur(id);wk=id;save();render()}
+function renWk(id,v){v=v.trim();const w=S.weeks.find(x=>x.id===id);if(w&&v){w.name=v;save();render()}}
+function togWk(id,v){const w=S.weeks.find(x=>x.id===id);if(w){w.show=v;save();render()}}
+function setWkMode(m){S.settings.wkMode=m;save();render()}
+const weekPts=id=>S.halaqat.reduce((a,h)=>a+h.students.reduce((b,s)=>b+Object.values((s.scores||{})[id]||{}).reduce((c,d)=>c+Object.values(d).reduce((x,v)=>x+(+v||0),0),0),0),0);
+function weekV(){const md=wkMode(),mb=(m,l)=>`<button class="chip ${md===m?'on':''}" onclick="setWkMode('${m}')">${l}</button>`;
+ return `<div class="card"><h2>${esc(T('wkH'))}</h2><div class="mut" style="margin-bottom:8px">الأسبوع الحالي يظهر دائمًا في الرصد. إخفاء أسبوع لا يحذف درجاته ولا نقاطه، وتبقى محسوبة في عرض الدرجات والإحصائيات.</div>`+
+ `<div class="gl" style="margin-top:6px">وضع عرض الأسابيع في الرصد</div><div class="row" style="margin:6px 0">${mb('all','إظهار كل الأسابيع')}${mb('cur','إخفاء الكل عدا الحالي')}${mb('custom','مخصص')}</div>`+
+ `<div class="mut" style="margin-bottom:8px">${md==='custom'?'وضع «مخصص»: حدّد بمربع «يظهر في الرصد» الأسابيع الظاهرة والمخفية لكل أسبوع.':md==='cur'?'يظهر الأسبوع الحالي فقط، وبقية الأسابيع مخفية (اختيارك في «مخصص» محفوظ).':'كل الأسابيع ظاهرة في الرصد (اختيارك في «مخصص» محفوظ).'}</div>`+
+ S.weeks.filter(w=>!w.archived).map(w=>{const cur=w.id===S.curWeek,k='w_'+w.id,l=S.locks[k]||{};
+  return `<div class="wkc${cur?' cur':''}"><div class="row"><label style="display:flex;gap:6px;align-items:center;font-weight:700;white-space:nowrap"><input type="radio" name="cw" ${cur?'checked':''} onchange="setCur('${w.id}')"> ${esc(T('wkCur'))}</label><input value="${esc(w.name)}" onchange="renWk('${w.id}',this.value)" style="flex:1;min-width:140px"><span class="mut">${weekPts(w.id)} ${esc(T('pts'))}</span><button class="btn x" onclick="delWk('${w.id}')">${esc(T('del'))}</button></div>`+
+  `<div class="row"><label class="mut"><input type="checkbox" ${wkVis(w)?'checked':''} ${cur||md!=='custom'?'disabled':''} onchange="togWk('${w.id}',this.checked)"> يظهر في الرصد</label>${cur?'<span class="mut">(الحالي يظهر دائمًا)</span>':md!=='custom'?'<span class="mut">(غيّر الوضع إلى «مخصص» للتحكم)</span>':''}</div>`+
+  `<div class="row" style="margin:0"><b>${l.on?'🔒':'🔓'} قفل الأسبوع</b><input id="c_${k}" placeholder="${l.on?'رمز جديد':'رمز القفل'}" style="width:120px"><button class="btn" onclick="setLock('${k}',true)">${l.on?'تغيير':'تفعيل'}</button><button class="btn g" ${l.on?'':'disabled'} onclick="setLock('${k}',false)">إلغاء القفل</button></div></div>`}).join('')+
+ (()=>{const ar=S.weeks.filter(w=>w.archived);return ar.length?`<div class="gl">الأسابيع المحذوفة (درجاتها محفوظة)</div>`+ar.map(w=>`<div class="wkc"><div class="row" style="margin:0"><b style="flex:1">${esc(w.name)}</b><span class="mut">${weekPts(w.id)} ${esc(T('pts'))} (ما زالت محسوبة)</span><button class="btn" onclick="restoreWk('${w.id}')">استرجاع</button></div></div>`).join(''):''})()+
+ `<div class="mut" style="margin-top:10px">الإضافة تسمّي الأسبوع تلقائيًا (الأسبوع 1، الأسبوع 2، ...). كتابة اسم هنا اختيارية، ويمكنك تغيير اسم أي أسبوع من خانته أعلاه.</div><div class="row" style="margin-top:6px"><input id="nws" placeholder="${esc(T('newWk'))}" style="flex:1;min-width:160px"><button class="btn" onclick="addWk('nws')">${esc(T('addWk'))}</button></div></div>`}
+function setSc(h,s,i,v){const st=H(h).students.find(a=>a.id===s),w=curW();st.scores=st.scores||{};const W=st.scores[w]=st.scores[w]||{};W[day]=W[day]||{};if(v==='')delete W[day][i];else W[day][i]=+v;save();render()}
+function fullSc(h,s,i){const x=H(h),st=x.students.find(a=>a.id===s),it=itemsFor(x,curW()).find(a=>a.id===i),cur=(((st.scores||{})[curW()]||{})[day]||{})[i];setSc(h,s,i,cur==it.max?'':String(it.max))}
 function addSt(h){const v=$('ns').value.trim();if(!v)return;H(h).students.push({id:uid(),name:v,scores:{},notes:{}});save();render()}
 let UT=null;
 function undoToast(msg,fn){clearTimeout(UT);const o=document.getElementById('utoast');if(o)o.remove();const d=document.createElement('div');d.id='utoast';
@@ -249,19 +421,21 @@ function undoToast(msg,fn){clearTimeout(UT);const o=document.getElementById('uto
  d.querySelector('button').onclick=()=>{d.remove();clearTimeout(UT);fn()};document.body.appendChild(d);UT=setTimeout(()=>d.remove(),12000)}
 function delSt(h,s){ask('هل أنت متأكد من الحذف؟',()=>{const x=H(h);if(!x)return;const i=x.students.findIndex(a=>a.id===s);if(i<0)return;const st=x.students[i];x.students.splice(i,1);save();render();
  undoToast('تم حذف «'+st.name+'»',()=>{const y=H(h);if(!y)return toast('الحلقة غير موجودة');if(y.students.some(a=>a.id===st.id))return;y.students.splice(Math.min(i,y.students.length),0,st);save();render()})},{red:1,yes:'حذف'})}
-function clrRd(h,s){const x=H(h),st=x&&x.students.find(a=>a.id===s);if(!st)return;const dd=day;if(!st.scores||!st.scores[dd]||!Object.keys(st.scores[dd]).length)return toast('لا يوجد رصد لهذا اليوم');
- ask('مسح رصد اليوم لـ «'+st.name+'»؟',()=>{const old=JSON.parse(JSON.stringify(st.scores[dd]));delete st.scores[dd];save();render();
-  undoToast('تم مسح الرصد',()=>{const t=(H(h)||{students:[]}).students.find(a=>a.id===s);if(!t)return toast('الطالب غير موجود');t.scores=t.scores||{};t.scores[dd]=old;save();render()})},{red:1,yes:'مسح'})}
+function clrRd(h,s){const x=H(h),st=x&&x.students.find(a=>a.id===s);if(!st)return;const dd=day,wid=curW(),W0=(st.scores||{})[wid];if(!W0||!W0[dd]||!Object.keys(W0[dd]).length)return toast('لا يوجد رصد لهذا اليوم');
+ ask('مسح رصد اليوم لـ «'+st.name+'»؟',()=>{const WW=st.scores[wid];if(!WW||!WW[dd])return;const old=JSON.parse(JSON.stringify(WW[dd]));delete WW[dd];save();render();
+  undoToast('تم مسح الرصد',()=>{const t=(H(h)||{students:[]}).students.find(a=>a.id===s);if(!t)return toast('الطالب غير موجود');t.scores=t.scores||{};t.scores[wid]=t.scores[wid]||{};t.scores[wid][dd]=old;save();render()})},{red:1,yes:'مسح'})}
 function restoreNames(){const n=seedMissing();if(n){save();render();toast('تمت إضافة '+n+' اسم ناقص')}else toast('لا توجد أسماء ناقصة')}
 /* البنود */
 const listOf=h=>h==='g'?S.items:(H(h)||{}).items;
 function itemsV(){if(itH!=='g'&&!(H(itH)&&H(itH).own))itH='g';const L=listOf(itH);
- return `<div class="card"><h2>${esc(T('itemsH'))}</h2><div class="tabs"><button class="${itH==='g'?'on':''}" onclick="itH='g';render()">${esc(T('allItems'))}</button>`+S.halaqat.filter(h=>h.own).map(h=>`<button class="${h.id===itH?'on':''}" onclick="itH='${h.id}';render()">${esc(h.name)} (${esc(T('ownItems'))})</button>`).join('')+'</div>'+
+ return `<div class="card"><h2>${esc(T('itemsH'))}</h2><div class="mut" style="margin-bottom:8px">التعديل هنا يسري على الأسبوع الحالي «${esc(curWName())}» وما بعده فقط، والأسابيع السابقة تحتفظ ببنودها ودرجاتها كما كانت.</div><div class="tabs"><button class="${itH==='g'?'on':''}" onclick="itH='g';render()">${esc(T('allItems'))}</button>`+S.halaqat.filter(h=>h.own).map(h=>`<button class="${h.id===itH?'on':''}" onclick="itH='${h.id}';render()">${esc(h.name)} (${esc(T('ownItems'))})</button>`).join('')+'</div>'+
  (L.length?L.map(it=>`<div class="row"><input value="${esc(it.name)}" onchange="editIt('${itH}','${it.id}','name',this.value)" style="flex:1;max-width:260px"><input type="number" min="1" value="${it.max}" onchange="editIt('${itH}','${it.id}','max',this.value)"><span>${esc(T('grade'))}</span><button class="btn x" onclick="delIt('${itH}','${it.id}')">${esc(T('del'))}</button></div>`).join(''):'<div class="empty">—</div>')+
  `<div class="row" style="margin-top:12px"><input id="ni" placeholder="${esc(T('newItem'))}" style="flex:1;max-width:260px"><input id="nm" type="number" min="1" value="10"><span>${esc(T('grade'))}</span><button class="btn" onclick="addIt('${itH}')">${esc(T('addItem'))}</button></div></div>`}
 function addIt(h){const v=$('ni').value.trim();if(!v)return;listOf(h).push({id:uid(),name:v,max:Math.max(1,+$('nm').value||10)});save();render()}
 function editIt(h,i,k,v){const it=listOf(h).find(a=>a.id===i);it[k]=k==='max'?(+v||1):v;save();render()}
-function delIt(h,i){const L=listOf(h),n=L.findIndex(a=>a.id===i);if(n<0)return;L.splice(n,1);S.halaqat.filter(x=>h==='g'?!x.own:x.id===h).forEach(x=>x.students.forEach(st=>Object.values(st.scores||{}).forEach(d=>delete d[i])));save();render()}
+function delIt(h,i){const L=listOf(h),n=L.findIndex(a=>a.id===i);if(n<0)return;const nm=L[n].name;
+ ask('حذف البند «'+nm+'» ودرجاته في الأسبوع الحالي «'+curWName()+'» فقط؟ الأسابيع السابقة تحتفظ به (ويمكن التراجع من سجل التغييرات).',()=>{const L2=listOf(h),n2=L2.findIndex(a=>a.id===i);if(n2<0)return;L2.splice(n2,1);
+  S.halaqat.filter(x=>h==='g'?!x.own:x.id===h).forEach(x=>x.students.forEach(st=>{const W=(st.scores||{})[S.curWeek];if(W)Object.values(W).forEach(d=>delete d[i])}));save();render()},{red:1,yes:'حذف'})}
 /* التنبيهات */
 function alertsV(){return `<div class="card"><h2>${esc(T('alertsH'))}</h2>`+(S.alerts.length?S.alerts.map(a=>`<div class="row"><input style="flex:1;min-width:180px" value="${esc(a.text)}" onchange="editAl('${a.id}',this.value)"><button class="btn x" onclick="delAl('${a.id}')">${esc(T('del'))}</button></div>`).join(''):'<div class="empty">—</div>')+`<div class="row"><input id="nal" placeholder="${esc(T('newAlert'))}" style="flex:1;min-width:180px"><button class="btn" onclick="addAl()">${esc(T('addAlert'))}</button></div></div>`}
 function addAl(){const v=$('nal').value.trim();if(!v)return;S.alerts.push({id:uid(),text:v});save();render()}
@@ -277,7 +451,7 @@ function resetLb(){ask('إرجاع كل المسميات للأصل؟',()=>{S.la
 function resetFt(){ask('إرجاع كل الخيارات للوضع الافتراضي (الكل مفعّل)؟',()=>{S.feat=Object.assign({},FD);save();render()},{yes:'نعم'})}
 function renDay(i,v){v=v.trim();if(v){S.days[i].n=v;save();render()}}
 function togDay(i,v){S.days[i].on=v;save();render()}
-function delDay(i){if(S.days.length<2)return toast('يجب بقاء يوم واحد');ask('حذف اليوم مع درجاته؟',()=>{S.days.splice(i,1);S.halaqat.forEach(h=>h.students.forEach(s=>{const n={};Object.keys(s.scores||{}).forEach(k=>{k=+k;if(k<i)n[k]=s.scores[k];else if(k>i)n[k-1]=s.scores[k]});s.scores=n}));day=0;save();render()},{red:1,yes:'حذف'})}
+function delDay(i){if(S.days.length<2)return toast('يجب بقاء يوم واحد');ask('حذف اليوم ودرجاته في الأسبوع الحالي «'+curWName()+'» فقط؟ الأسابيع السابقة تحتفظ بأيامها (ويمكن التراجع من سجل التغييرات).',()=>{S.days.splice(i,1);S.halaqat.forEach(h=>h.students.forEach(s=>{const src=(s.scores||{})[S.curWeek];if(!src)return;const n={};Object.keys(src).forEach(k=>{k=+k;if(k<i)n[k]=src[k];else if(k>i)n[k-1]=src[k]});s.scores[S.curWeek]=n}));day=0;save();render()},{red:1,yes:'حذف'})}
 function addDay(){const v=$('nd').value.trim();if(!v)return;S.days.push({n:v,on:true});save();render()}
 const PALB=['#2b5a37','#0b4fad','#5e4496','#80592a','#c9a50f','#8b0a0a','#545454','#0b8f7e'];
 function hsl(h,s,l){s/=100;l/=100;const a=s*Math.min(l,1-l),f=n=>{const k=(n+h/30)%12,c=l-a*Math.max(-1,Math.min(k-3,9-k,1));return Math.round(255*c).toString(16).padStart(2,'0')};return '#'+f(0)+f(8)+f(4)}
@@ -292,8 +466,55 @@ function addH(){const v=$('nh').value.trim();if(!v)return;S.halaqat.push({id:uid
 function delH(id){ask('حذف الحلقة بكل طلابها؟',()=>{const i=S.halaqat.findIndex(x=>x.id===id);if(i<0)return;const hh=S.halaqat[i],lk=S.locks['h_'+id];S.halaqat.splice(i,1);delete S.locks['h_'+id];if(tab===id)tab='set';save();render();undoToast('تم حذف «'+hh.name+'»',()=>{if(S.halaqat.some(x=>x.id===id))return;S.halaqat.splice(Math.min(i,S.halaqat.length),0,hh);if(lk)S.locks['h_'+id]=lk;save();render()})},{red:1,yes:'حذف'})}
 function setLock(k,on){if(on){const v=$('c_'+k).value.trim();if(!v)return toast('اكتب رمز القفل أولاً');S.locks[k]={on:true,code:v};unlocked[k]=1}else S.locks[k]={on:false,code:''};save();render()}
 function lockRow(k,n){const l=S.locks[k]||{};return `<div class="line"><b>${esc(n)}${LKI(k)}</b><span class="row" style="margin:0"><input id="c_${k}" placeholder="${l.on?'رمز جديد':'رمز القفل'}" style="width:120px"><button class="btn" onclick="setLock('${k}',true)">${l.on?'تغيير':'تفعيل'}</button><button class="btn g" ${l.on?'':'disabled'} onclick="setLock('${k}',false)">إلغاء القفل</button></span></div>`}
+function wipeAll(){
+ delete unlocked.wipe; /* قفل هذا الزر يُطلب رمزه في كل مرة */
+ const m1='⚠ تحذير: سيتم حذف جميع البيانات نهائيًا (الحلقات والطلاب وكل الدرجات والأسابيع والبنود والأيام والتنبيهات وسجل التغييرات) من هذا الجهاز ومن السحابة، وتتزامن بقية الأجهزة معها. المسميات والإعدادات والأقفال تبقى. تُحفظ نسخة أمان تلقائيًا في هذا الجهاز. هل تريد المتابعة؟';
+ gate('wipe',()=>ask(m1,()=>ask('التنبيه الأخير: '+m1.replace(/^⚠ تحذير: /,''),doWipe,{red:1,yes:'حذف كل شيء'}),{red:1,yes:'متابعة'}))}
+function doWipe(){
+ try{localStorage.setItem('maydan_bak_before_wipe',JSON.stringify(S));localStorage.removeItem('maydan_bak_pre_weeks')}catch(e){}
+ HA=1;const k={locks:S.locks,labels:S.labels,feat:S.feat,settings:S.settings};
+ S=Object.assign(init(),{labels:k.labels,feat:k.feat,settings:k.settings,locks:k.locks,seed1:1,mig2:1,alerts:[]});
+ norm();
+ const ids=new Set(S.halaqat.map(h=>'h_'+h.id).concat(S.weeks.map(w=>'w_'+w.id)));
+ Object.keys(S.locks).forEach(x=>{if(/^[hw]_/.test(x)&&!ids.has(x))delete S.locks[x]});
+ tab='set';day=0;wk=null;pg=0;q='';rq='';itH='g';hf='all';
+ HL=[];try{localStorage.removeItem('maydan_hist')}catch(e){}
+ histSync();HA=0;save();render();toast('تم حذف جميع البيانات')}
+function exportWipeBak(){const r=localStorage.getItem('maydan_bak_before_wipe');if(!r)return toast('لا توجد نسخة');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r],{type:'application/json'}));a.download='maydan_before_wipe.json';a.click()}
+function exportPre(){const r=localStorage.getItem('maydan_bak_pre_weeks');if(!r)return toast('لا توجد نسخة قديمة');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r],{type:'application/json'}));a.download='maydan_before_weeks.json';a.click()}
 function exportData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));a.download='maydan_backup.json';a.click()}
-function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d&&d.halaqat){S=d;save();location.reload()}else toast('ملف غير صالح')}catch(err){toast('ملف غير صالح')}};r.readAsText(f)}
+/* ===== حفظ كل البيانات على نسخة احتياطية: نسخ ما يظهر على هذا الجهاز إلى السحابة فينعكس عند كل الأجهزة ===== */
+const _enc=s=>new TextEncoder().encode(s).length;
+function devPack(){const o={};try{let h=HL.slice(),s=JSON.stringify(h);while(_enc(s)>900000&&h.length>20){h.shift();s=JSON.stringify(h)}o.hist=JSON.parse(s);
+ ['maydan_bak_pre_weeks','maydan_bak_before_wipe'].forEach(k=>{const v=localStorage.getItem(k);if(v&&_enc(v)<=900000)o[k]=v})}catch(e){}return o}
+function devApply(id,v,ts){try{
+ if(id==='hist'){if(!Array.isArray(v))return;HL=v;hStore()}
+ else if(/^maydan_bak_/.test(id)){if(v==null)localStorage.removeItem(id);else localStorage.setItem(id,v)}
+ localStorage.setItem('maydan_dev_ts_'+id,String(ts));if(tab==='set')window._rp=1}catch(e){}}
+function fullBackup(){
+ if(!window.cloudForce)return toast('السحابة غير مفعّلة على هذا الجهاز');
+ ask('سيتم نسخ كل ما يظهر على هذا الجهاز (الحلقات والطلاب والدرجات والأسابيع والبنود والأيام والتنبيهات والمسميات والإعدادات وسجل التغييرات والنسخ المحلية) إلى السحابة ليحل محل المحفوظ فيها، ويظهر مباشرة عند كل الأجهزة المتزامنة. هل تتابع؟',
+ ()=>{toast('⏳ جارٍ حفظ كل البيانات…');window.cloudForce().then(()=>toast('✅ تم حفظ كل البيانات على النسخة الاحتياطية وانعكست على كل الأجهزة')).catch(e=>{console.error(e);toast('⚠ تعذّر الحفظ، تحقق من الاتصال')})},{yes:'حفظ ومزامنة'})}
+async function mdSource(){let src=null;
+ try{if(/^https?:/.test(location.protocol)){const r=await fetch(location.href.split('#')[0],{cache:'no-store'});if(r.ok){const x=await r.text();if(x.indexOf('function settingsV')>0&&x.indexOf('</main>')>0)src=x}}}catch(e){}
+ if(!src){const c=document.documentElement.cloneNode(true);
+  c.querySelectorAll('.ovl,#utoast,iframe,#prt').forEach(e=>e.remove());
+  ['app','modes','ttl','ico','ico2','org','dt'].forEach(id=>{const e=c.querySelector('#'+id);if(e)e.innerHTML=''});
+  const cs=c.querySelector('#cs');if(cs){cs.textContent='☁ …';cs.setAttribute('data-s','off')}
+  src='<!DOCTYPE html>\n'+c.outerHTML}
+ return src.replace(/<script id="md-snapshot"[\s\S]*?<\/script>\s*/,'')}
+async function exportHtml(){try{
+ const rd=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+ const d={v:1,ts:Date.now(),S:S,hist:HL,bakPre:rd('maydan_bak_pre_weeks'),bakWipe:rd('maydan_bak_before_wipe'),theme:rd('mdth')};
+ const js=JSON.stringify(d).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
+ let src=await mdSource();const i=src.indexOf('</main>');if(i<0)return toast('تعذّر إنشاء الملف');
+ const tag='<scr'+'ipt id="md-snapshot" type="application/json">'+js+'</scr'+'ipt>\n';
+ src=src.slice(0,i+7)+'\n'+tag+src.slice(i+7);
+ const n=new Date(),z=x=>String(x).padStart(2,'0'),a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([src],{type:'text/html;charset=utf-8'}));
+ a.download='maydan_data_'+n.getFullYear()+'-'+z(n.getMonth()+1)+'-'+z(n.getDate())+'_'+z(n.getHours())+z(n.getMinutes())+'.html';
+ document.body.appendChild(a);a.click();a.remove();toast('تم تنزيل ملف HTML بكل البيانات')}catch(e){console.error(e);toast('تعذّر إنشاء الملف')}}
+function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d&&d.halaqat){S=d;try{localStorage.removeItem('maydan_hist')}catch(e2){}save();location.reload()}else toast('ملف غير صالح')}catch(err){toast('ملف غير صالح')}};r.readAsText(f)}
 function settingsV(){
  const dm=S.settings.dateMode,op=(v,l)=>`<option value="${v}" ${dm===v?'selected':''}>${l}</option>`;
  let h=`<div class="card"><h2>⚙ تعديل المسميات يدوياً</h2><div class="mut" style="margin-bottom:6px">غيّر أي اسم أو عنوان أو زر في البرنامج. اترك الخانة فارغة لإرجاع الاسم الأصلي.</div>`+
@@ -303,10 +524,11 @@ function settingsV(){
  `<div class="line"><span>عدد الحلقات في صفحة الإحصائيات</span><input type="number" min="1" max="50" value="${S.feat.statsPer||10}" onchange="S.feat.statsPer=Math.max(1,+this.value||10);save();render()"></div><div class="line"><span>عدد المشاركين في كل صفحة</span><input type="number" min="1" max="100" value="${S.feat.perPage}" onchange="setPer(this.value)"></div><div class="row" style="margin-top:10px"><button class="btn g" onclick="resetFt()">إرجاع الخيارات للافتراضي</button></div></div>`+
  `<div class="card"><h2>التاريخ والعرض التلقائي</h2><div class="line"><span>التاريخ تحت العنوان</span><select onchange="setDm(this.value)">${op('none','بدون')}${op('h','هجري')}${op('g','ميلادي')}${op('hg','هجري وميلادي معًا')}${op('d','اليوم فقط')}${op('dh','اليوم + هجري')}${op('dg','اليوم + ميلادي')}${op('dhg','اليوم + هجري + ميلادي معًا')}</select></div>`+
  `<div class="line"><span>الانتقال التلقائي بين الصفحات ${S.settings.auto?'✅':'⛔'}</span><span class="row" style="margin:0"><input type="number" min="3" max="120" id="secs" value="${S.settings.secs}"><span class="mut">ثانية</span><button class="btn" onclick="setAuto(true)">${S.settings.auto?'حفظ المدة':'تفعيل'}</button><button class="btn g" ${S.settings.auto?'':'disabled'} onclick="setAuto(false)">إلغاء</button></span></div></div>`+
- prV()+colV()+`<div class="card"><h2>الحلقات</h2>`+S.halaqat.map(x=>`<div class="line"><input value="${esc(x.name)}" onchange="renH('${x.id}',this.value)" style="flex:1;min-width:160px"><label class="mut"><input type="checkbox" ${x.own?'checked':''} onchange="ownH('${x.id}',this.checked)"> بنود مخصصة</label><span class="mut">${x.students.length} ${esc(T('stuUnit'))}</span><button class="btn x" onclick="delH('${x.id}')">${esc(T('del'))}</button></div>`).join('')+`<div class="row" style="margin-top:10px"><input id="nh" placeholder="اسم حلقة جديدة..." style="flex:1"><button class="btn" onclick="addH()">+ إضافة حلقة</button></div></div>`+
- `<div class="card"><h2>أيام الرصد</h2>`+S.days.map((d,i)=>`<div class="line"><input value="${esc(d.n)}" onchange="renDay(${i},this.value)" style="flex:1"><label class="mut"><input type="checkbox" ${d.on?'checked':''} onchange="togDay(${i},this.checked)"> مفعّل</label><button class="btn x" onclick="delDay(${i})">${esc(T('del'))}</button></div>`).join('')+`<div class="row" style="margin-top:10px"><input id="nd" placeholder="اسم يوم جديد..." style="flex:1"><button class="btn" onclick="addDay()">+ إضافة يوم</button></div></div>`+
- `<div class="card"><h2>أقفال الرموز 🔒</h2>`+lockRow('scores',T('modeS'))+lockRow('rasd',T('modeA'))+lockRow('stats',T('modeT'))+lockRow('items',T('tabItems'))+lockRow('alerts',T('tabAlerts'))+lockRow('set',T('tabSet'))+S.halaqat.map(x=>lockRow('h_'+x.id,x.name)).join('')+`</div>`+
- `<div class="card"><h2>نسخة احتياطية</h2><div class="row"><button class="btn g" onclick="exportData()">⬇ تصدير نسخة (JSON)</button><label class="btn g" style="cursor:pointer">⬆ استيراد نسخة<input type="file" accept=".json" hidden onchange="importData(this)"></label><button class="btn g" onclick="restoreNames()">↩ استرجاع الأسماء الأصلية الناقصة</button></div></div>`;
+ weekV()+histV()+prV()+colV()+`<div class="card"><h2>الحلقات</h2><div class="mut" style="margin-bottom:6px">خيار «بنود مخصصة» يسري على الأسبوع الحالي «${esc(curWName())}» وما بعده فقط.</div>`+S.halaqat.map(x=>`<div class="line"><input value="${esc(x.name)}" onchange="renH('${x.id}',this.value)" style="flex:1;min-width:160px"><label class="mut"><input type="checkbox" ${x.own?'checked':''} onchange="ownH('${x.id}',this.checked)"> بنود مخصصة</label><span class="mut">${x.students.length} ${esc(T('stuUnit'))}</span><button class="btn x" onclick="delH('${x.id}')">${esc(T('del'))}</button></div>`).join('')+`<div class="row" style="margin-top:10px"><input id="nh" placeholder="اسم حلقة جديدة..." style="flex:1"><button class="btn" onclick="addH()">+ إضافة حلقة</button></div></div>`+
+ `<div class="card"><h2>أيام الرصد</h2><div class="mut" style="margin-bottom:6px">التعديل يسري على الأسبوع الحالي «${esc(curWName())}» وما بعده فقط، والأسابيع السابقة تحتفظ بأيامها.</div>`+S.days.map((d,i)=>`<div class="line"><input value="${esc(d.n)}" onchange="renDay(${i},this.value)" style="flex:1"><label class="mut"><input type="checkbox" ${d.on?'checked':''} onchange="togDay(${i},this.checked)"> مفعّل</label><button class="btn x" onclick="delDay(${i})">${esc(T('del'))}</button></div>`).join('')+`<div class="row" style="margin-top:10px"><input id="nd" placeholder="اسم يوم جديد..." style="flex:1"><button class="btn" onclick="addDay()">+ إضافة يوم</button></div></div>`+
+ `<div class="card"><h2>أقفال الرموز 🔒</h2>`+lockRow('scores',T('modeS'))+lockRow('rasd',T('modeA'))+lockRow('stats',T('modeT'))+lockRow('items',T('tabItems'))+lockRow('alerts',T('tabAlerts'))+lockRow('set',T('tabSet'))+lockRow('wipe',T('wipeBtn'))+S.halaqat.map(x=>lockRow('h_'+x.id,x.name)).join('')+`</div>`+
+ `<div class="card"><h2>نسخة احتياطية</h2><div class="mut" style="margin-bottom:10px">«حفظ كل البيانات على نسخة احتياطية» ينسخ كل ما يظهر على هذا الجهاز إلى السحابة ويحل محل المحفوظ فيها، فينعكس مباشرة على التزامن وعلى كل الأجهزة. «تنزيل ملف HTML» يحفظ نسخة من التطبيق ببياناتها كاملة (حتى ما يخص هذا الجهاز فقط) في ملف.</div><div class="row"><button class="btn" onclick="fullBackup()">☁ حفظ كل البيانات على نسخة احتياطية</button><button class="btn" onclick="exportHtml()">⬇ تنزيل ملف HTML بالبيانات</button><button class="btn g" onclick="exportData()">⬇ تصدير نسخة (JSON)</button><label class="btn g" style="cursor:pointer">⬆ استيراد نسخة<input type="file" accept=".json" hidden onchange="importData(this)"></label><button class="btn g" onclick="restoreNames()">↩ استرجاع الأسماء الأصلية الناقصة</button>${(()=>{try{return localStorage.getItem('maydan_bak_pre_weeks')?'<button class="btn g" onclick="exportPre()">⬇ نسخة ما قبل الأسابيع (أمان)</button>':''}catch(e){return ''}})()}${(()=>{try{return localStorage.getItem('maydan_bak_before_wipe')?'<button class="btn g" onclick="exportWipeBak()">⬇ نسخة ما قبل الحذف (أمان)</button>':''}catch(e){return ''}})()}</div></div>`+
+ `<div class="card" style="border:2px solid #d9534f"><h2 style="color:#d9534f">⚠ منطقة الخطر${LKI('wipe')}</h2><div class="mut" style="margin-bottom:8px">يحذف الحلقات والطلاب وكل الدرجات والأسابيع والبنود والأيام والتنبيهات وسجل التغييرات، من الجهاز ومن السحابة. المسميات والإعدادات والأقفال تبقى. يطلب تأكيدين، ورمز القفل إن كان مفعّلًا (من بطاقة «أقفال الرموز»).</div><div class="row"><button class="btn x" onclick="wipeAll()">${esc(T('wipeBtn'))}</button></div></div>`;
  return h}
 /* ===== الطباعة وملف PDF ===== */
 const PN={s:'عرض الدرجات',t:'الإحصائيات',st:'عرض الدرجات + الإحصائيات'};
@@ -366,14 +588,17 @@ function cloudApply(batch,reset){
  const wt=h=>(h.students||[]).reduce((a,st)=>a+1+Object.values(st.scores||{}).reduce((x,d)=>x+Object.keys(d).length,0),0);
  const keep={};S.halaqat.forEach(h=>{const k=(h.name||'').trim();if(!keep[k]||wt(h)>wt(keep[k]))keep[k]=h});
  const nb=S.halaqat.length;S.halaqat=S.halaqat.filter(h=>keep[(h.name||'').trim()]===h);
+ if(!S.weeks)try{preBak(JSON.stringify(S))}catch(e){}
  norm();try{localStorage.setItem('maydan',JSON.stringify(S))}catch(e){}
- if(S.halaqat.length!==nb)setTimeout(()=>{window.cloudPush&&window.cloudPush()},0);
+ histSync();
+ if(S.halaqat.length!==nb||window._mg){window._mg=0;setTimeout(()=>{window.cloudPush&&window.cloudPush()},0)}
  if(tab!=='set'&&tab!=='items'&&tab!=='alerts'&&!H(tab))tab=S.halaqat[0]?S.halaqat[0].id:'set';
  timer();
  if(cloudBusy()){window._rp=1;return}
  render()}
 setInterval(()=>{if(window._rp&&!cloudBusy()){window._rp=0;render()}},1200);
-timer();render();setInterval(()=>{$('dt').textContent=dateText()},60000);
+HA=0;histSync();
+timer();render();if(window._seeded){window._seeded=0;toast('تم تحميل البيانات من ملف النسخة')}setInterval(()=>{$('dt').textContent=dateText()},60000);
 </script>
 
 <script type="module">
@@ -426,6 +651,23 @@ else{
   ids.forEach(id=>{batch.push({k:'h',id,s:init.h[id]});sync.h[id]=init.h[id]});
   cloudApply(batch,true);ready=true;st('☁ متزامن','ok');window.cloudPush();
  }
+
+ window.cloudForce=async()=>{
+  if(!ready)throw new Error('not ready');
+  clearTimeout(tmr);tmr=null;queue=[];
+  const c=split(),jobs=[],ts=Date.now();
+  st('⏳ جارٍ الحفظ…','wait');
+  sync.meta=c.meta;jobs.push(setDoc(metaRef,{data:c.meta,t:serverTimestamp()}));
+  for(const id in c.h){sync.h[id]=c.h[id];jobs.push(setDoc(doc(hCol,id),{data:c.h[id],t:serverTimestamp()}))}
+  for(const id of Object.keys(sync.h)){if(!(id in c.h)){delete sync.h[id];jobs.push(deleteDoc(doc(hCol,id)))}}
+  const p=devPack();
+  for(const k in p){jobs.push(setDoc(doc(db,'maydan_meta','dev_'+k),{data:JSON.stringify({ts,v:p[k]}),t:serverTimestamp()}));try{localStorage.setItem('maydan_dev_ts_'+k,String(ts))}catch(e){}}
+  try{await Promise.all(jobs);st('☁ متزامن','ok')}catch(e){onErr(e);throw e}
+ };
+ ['hist','maydan_bak_pre_weeks','maydan_bak_before_wipe'].forEach(k=>onSnapshot(doc(db,'maydan_meta','dev_'+k),snap=>{
+  if(!snap.exists()||snap.metadata.hasPendingWrites)return;
+  try{const o=JSON.parse(snap.data().data),mine=+localStorage.getItem('maydan_dev_ts_'+k)||0;
+   if(o&&o.ts>mine&&window.devApply)devApply(k,o.v,o.ts)}catch(e){}},()=>{}));
  st('⏳ جارٍ الاتصال…','wait');
  onSnapshot(metaRef,snap=>{
   const s=snap.exists()?snap.data().data:null;
