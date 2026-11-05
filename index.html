@@ -113,6 +113,23 @@ body.fit #app{flex:1;min-height:0;display:flex;flex-direction:column}
 #prt{display:none}
 @media print{@page{size:A4;margin:12mm}html,body{height:auto!important;overflow:visible!important;display:block!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body>*:not(#prt){display:none!important}#prt{display:block!important}}
 #cs{position:absolute;bottom:10px;right:24px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:99px;white-space:nowrap}#cs[data-s=err]{background:#d9534f}#cs[data-s=off]{opacity:.7}
+#app .card.sc,.snav{width:100%;flex:0 0 100%;max-width:100%;box-sizing:border-box;grid-column:1/-1;display:block}
+#app .card.sc>h2{display:flex}
+.snav{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex!important;gap:6px;overflow-x:auto;white-space:nowrap;margin-bottom:8px}
+.snav button{border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;cursor:pointer;flex:none}
+.snav button.ac{background:var(--pr);color:#fff;border-color:var(--pr)}
+#app .card.sc{border:1px solid var(--ln);scroll-margin-top:56px}
+#app .card.sc>h2{cursor:pointer;display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:17px;user-select:none}
+#app .card.sc>h2::before{content:'';width:5px;height:22px;border-radius:4px;background:var(--pr);flex:none}
+#app .card.sc>h2::after{content:'▾';margin-inline-start:auto;color:var(--mut);transition:transform .2s}
+#app .card.sc.cl>h2{margin-bottom:0}
+#app .card.sc.cl>h2::after{transform:rotate(90deg)}
+#app .card.sc.cl>*:not(h2){display:none}
+.stg{border:1px solid var(--ln);border-radius:14px;margin-bottom:8px;padding:4px 12px}
+.stg summary{display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 0}
+.mvbar{position:sticky;bottom:8px;background:var(--card);padding:10px;border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.15);margin-top:10px;align-items:center;border:1px solid var(--ln)}
+.chk{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px;margin:6px 0 10px}.chk label{display:flex;gap:6px;align-items:center;font-size:13px}
+.pi svg{display:block}
 </style></head><body>
 <header>
  <span id="cs" data-s="off">☁ …</span>
@@ -283,7 +300,7 @@ function histV(){
 const save=()=>{try{localStorage.setItem('maydan',JSON.stringify(S))}catch(e){}histRec();if(window.cloudPush)window.cloudPush()};
 if(window._mg){window._mg=0;save()}
 const SEED={"أحمد بن حنبل":["أنس عبده محمد","جواد ناصر الزلمة","حسن ملهم فرحان","خالد تركي باوزير","رائد محمد آدم","سالم ملهم فرحان","سعد محمد الهويمل","سلمان مشعل المبارك","صادق عابد درجان","عبدالرحمن عمار الصهباني","عبدالله محمد شمسان","عمر منصور هوساوي","محمد أحمد حمندوش","محمد تركي باوزير","يزن نور القيوم حمزة"],"ابن الجوزي":["ابراهيم محمد الجمعة","حسان أمين العواضي","حمزة عبده الرخمي","حميد بشير الحلياني","راشد عبدالرحمن بن خنين","عبدالرحمن خالد الجمعة","عبدالرحمن عبدالعزيز الهديب","عبدالرحمن فهد النجار","عبدالملك بن عبدالله العقيل","عبدالملك سعد القحطاني","غنام ماجد العتيبي","محمد عبداللّٰه الكثيري"],"ابن كثير":["إياد بن عبدالرحمن العلوي","بسام عبدالملك الشقير","تركي فهد النجار","حسام سياف قحطان","راكان خالد العتيبي","سعد ابراهيم العشبان","سعود عبدالعزيز النويعم","عبدالمجيد يحيى الحسيني","عبدالملك يحيى الحسيني","عبد الوهاب عبدالله بافضل","فيصل سعود العمر","مازن بن ناصر المحسن","مالك فارس الكثيري","مبارك مشعل المبارك","محمد تركي الجريوي","محمد خالد الموسى","محمد عثمان الضويان","يزيد محمد الشجاعي","يوسف خالد الجمعة"],"الشاطبي":["أحمد عبدالكريم الناطف","أحمد محمود عبدالهادي","اسامة محمد السالم","تركي علي أحمد سلام","حسن عبدالمالك رحمة","خطاب عبدالرقيب علوان","ريان محمد آدم","سعيد رضوان البج","سعيد عبدالرحمن باوزير","سند أحمد هارون","عبدالملك هارون أبو بكر","فادي محمد السالم","فراس طه علي سيف","قصي ناصر الزلمة","قيس حسين الرشيدي","ماهر محمود فضل حق","محمد طه علي سيف","محمد عمار درهم","وائل جمال علي سلام","ورد رضوان البج","وسام عبدالمنعم محمد"],"مالك":["أنس عبدالإله علي الحداد","أوس أنس محمد","امران عبدالرحمن ابرار","أويس أنس محمد","توفيق عبدالمنعم محمد","زياد محمد الجمعة","سطام مشعل المبارك","سلمان عبد الرحمن باوزير","عابد محمد أبو حسن","عبدلعزيز رضوان علي","عبدالرحمن ناصر عثمان","عبدالوهاب سلطان سلطان","عدي قايد مهيوب","علي عابد محمد درجان","فياض أحمد العلاوي","محمد نور خوجة","مصطفى محمد البقلاوي","وسيم جمال علي سلام","يوسف محمود سويفي"],"التلقين":["أنس محمد الأحمد","تميم عبدالكريم محمد","حارث محمد الشجاعي","حمزة بن محمد جانيش","حميدي محمد الأحمد","خالد شمس الدين قنديل","عثمان ملهم فرحان","غيث أسامة يحيى"]};
-function seedMissing(){let n=0;for(const k in SEED){const h=S.halaqat.find(x=>x.name.includes(k));if(!h)continue;SEED[k].forEach(nm=>{if(!h.students.some(st=>st.name===nm)){h.students.push({id:uid(),name:nm,scores:{},notes:{}});n++}})}return n}
+function seedMissing(){let n=0;for(const k in SEED){const h=S.halaqat.find(x=>x.name.includes(k));if(!h)continue;SEED[k].forEach(nm=>{if(!h.students.some(st=>st.name===nm)&&!S.halaqat.some(hh=>hh.students.some(st=>st.sn===nm))){h.students.push({id:uid(),name:nm,scores:{},notes:{}});n++}})}return n}
 if(!S.seed1){seedMissing();S.seed1=1;save()}
 const T=k=>{const v=S.labels[k];return (v===undefined||v==='')?LD[k]:v};
 const F=k=>S.feat[k]!==false&&!!S.feat[k];
@@ -337,7 +354,7 @@ addEventListener('resize',fitH);addEventListener('orientationchange',()=>setTime
 function scoresV(){
  const a=all();let h='';
  if(F('alerts')){const L=(S.alerts||[]).filter(x=>(x.text||'').trim());h+=L.map(x=>`<div class="al">📢 ${esc(x.text)}</div>`).join('')}
- if(F('podium')){const t3=a.slice(0,3);h+=`<div class="podium">`+t3.map((p,i)=>`<div class="pc p${i+1}"><div class="pi">${['👑','🥈','🥉'][i]}</div><div class="pn">${esc(p.name)}</div><div class="pp">${p.pts} <small style="font-size:12px">${esc(T('pts'))}</small></div>${F('hqPod')?`<div class="pr"><span class="bd" style="background:${hc(p.hi)}">${esc(p.hq)}</span></div>`:''}</div>`).join('')+'</div>'}
+ if(F('podium')){const t3=a.slice(0,3);h+=`<div class="podium">`+t3.map((p,i)=>`<div class="pc p${i+1}"><div class="pi">${window.medalH?medalH(i):['👑','🥈','🥉'][i]}</div><div class="pn">${esc(p.name)}</div><div class="pp">${p.pts} <small style="font-size:12px">${esc(T('pts'))}</small></div>${F('hqPod')?`<div class="pr"><span class="bd" style="background:${hc(p.hi)}">${esc(p.hq)}</span></div>`:''}</div>`).join('')+'</div>'}
  if(F('list')){
   const rest=a.slice(F('podium')?3:0).map((p,i)=>({...p,rank:i+(F('podium')?4:1)}));
   const f=q?rest.filter(p=>p.name.includes(q)||p.hq.includes(q)):rest;
@@ -485,8 +502,8 @@ function exportPre(){const r=localStorage.getItem('maydan_bak_pre_weeks');if(!r)
 function exportData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));a.download='maydan_backup.json';a.click()}
 /* ===== حفظ كل البيانات على نسخة احتياطية: نسخ ما يظهر على هذا الجهاز إلى السحابة فينعكس عند كل الأجهزة ===== */
 const _enc=s=>new TextEncoder().encode(s).length;
-function devPack(){const o={};try{let h=HL.slice(),s=JSON.stringify(h);while(_enc(s)>900000&&h.length>20){h.shift();s=JSON.stringify(h)}o.hist=JSON.parse(s);
- ['maydan_bak_pre_weeks','maydan_bak_before_wipe'].forEach(k=>{const v=localStorage.getItem(k);if(v&&_enc(v)<=900000)o[k]=v})}catch(e){}return o}
+function devPack(){const o={};try{let h=HL.slice(),s=JSON.stringify(h);while(_enc(s)>400000&&h.length>20){h.shift();s=JSON.stringify(h)}o.hist=JSON.parse(s);
+ ['maydan_bak_pre_weeks','maydan_bak_before_wipe'].forEach(k=>{const v=localStorage.getItem(k);if(v&&_enc(v)<=400000)o[k]=v})}catch(e){}return o}
 function devApply(id,v,ts){try{
  if(id==='hist'){if(!Array.isArray(v))return;HL=v;hStore()}
  else if(/^maydan_bak_/.test(id)){if(v==null)localStorage.removeItem(id);else localStorage.setItem(id,v)}
@@ -514,7 +531,8 @@ async function exportHtml(){try{
  a.href=URL.createObjectURL(new Blob([src],{type:'text/html;charset=utf-8'}));
  a.download='maydan_data_'+n.getFullYear()+'-'+z(n.getMonth()+1)+'-'+z(n.getDate())+'_'+z(n.getHours())+z(n.getMinutes())+'.html';
  document.body.appendChild(a);a.click();a.remove();toast('تم تنزيل ملف HTML بكل البيانات')}catch(e){console.error(e);toast('تعذّر إنشاء الملف')}}
-function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d&&d.halaqat){S=d;try{localStorage.removeItem('maydan_hist')}catch(e2){}save();location.reload()}else toast('ملف غير صالح')}catch(err){toast('ملف غير صالح')}};r.readAsText(f)}
+function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d&&d.halaqat){const nS=d.halaqat.reduce((a,h)=>a+((h.students||[]).length),0),cS=S.halaqat.reduce((a,h)=>a+((h.students||[]).length),0);
+ask('⚠ سيحل هذا الملف ('+d.halaqat.length+' حلقة، '+nS+' طالب) محل بيانات هذا الجهاز وكل السحابة (الحالي: '+S.halaqat.length+' حلقة، '+cS+' طالب)، وتتزامن بقية الأجهزة معه. يُنصح بتصدير نسخة (JSON) من الحالي أولاً. هل تتابع؟',()=>{S=d;try{localStorage.removeItem('maydan_hist')}catch(e2){}save();location.reload()},{red:1,yes:'استيراد واستبدال'})}else toast('ملف غير صالح')}catch(err){toast('ملف غير صالح')}};r.readAsText(f)}
 function settingsV(){
  const dm=S.settings.dateMode,op=(v,l)=>`<option value="${v}" ${dm===v?'selected':''}>${l}</option>`;
  let h=`<div class="card"><h2>⚙ تعديل المسميات يدوياً</h2><div class="mut" style="margin-bottom:6px">غيّر أي اسم أو عنوان أو زر في البرنامج. اترك الخانة فارغة لإرجاع الاسم الأصلي.</div>`+
@@ -556,7 +574,7 @@ function pdoc(k){
  if(k.includes('s')){
   if(F('alerts'))b+=(S.alerts||[]).filter(x=>(x.text||'').trim()).map(x=>`<div class="al">📢 ${esc(x.text)}</div>`).join('');
   b+=`<h2>${esc(T('podium'))} — ${esc(T('all'))} (${n})</h2><table><tr><th style="width:50px">#</th><th>${esc(T('colStu'))}</th>${F('colHq')?'<th>الحلقة</th>':''}<th style="width:110px">${pt}</th></tr>`+
-  (a.length?a.map((p,i)=>`<tr><td class="c" style="font-weight:800;border-right:6px solid ${dk(hc(p.hi))}">${i<3?['👑','🥈','🥉'][i]:i+1}</td><td style="font-weight:800">${esc(p.name)}</td>${F('colHq')?`<td><span class="dot" style="background:${dk(hc(p.hi))}"></span>${esc(p.hq)}</td>`:''}<td class="c" style="font-weight:800;color:#066a5f">${p.pts}</td></tr>`).join(''):`<tr><td colspan="4" class="c">${esc(T('noRes'))}</td></tr>`)+'</table>'}
+  (a.length?a.map((p,i)=>`<tr><td class="c" style="font-weight:800;border-right:6px solid ${dk(hc(p.hi))}">${i<3?(window.medalH?medalH(i):['👑','🥈','🥉'][i]):i+1}</td><td style="font-weight:800">${esc(p.name)}</td>${F('colHq')?`<td><span class="dot" style="background:${dk(hc(p.hi))}"></span>${esc(p.hq)}</td>`:''}<td class="c" style="font-weight:800;color:#066a5f">${p.pts}</td></tr>`).join(''):`<tr><td colspan="4" class="c">${esc(T('noRes'))}</td></tr>`)+'</table>'}
  if(k.includes('t')){
   const hT=S.halaqat.map((h,hi)=>{const pts=h.students.reduce((x,s)=>x+total(s),0);return {name:h.name,hi,cnt:h.students.length,pts,avg:h.students.length?Math.round(pts/h.students.length):0}}).sort((x,y)=>y.pts-x.pts);
   b+=`<div class="${k==='st'?'bk':''}"><h2>${esc(T('stH'))}</h2><div class="sg">`+
@@ -586,8 +604,9 @@ function cloudApply(batch,reset){
    else{const h=JSON.parse(x.s);if(i>=0)S.halaqat[i]=h;else S.halaqat.push(h)}}});
  S.halaqat.sort((a,b)=>{const x=window._ord.indexOf(a.id),y=window._ord.indexOf(b.id);return (x<0?999:x)-(y<0?999:y)});
  const wt=h=>(h.students||[]).reduce((a,st)=>a+1+Object.values(st.scores||{}).reduce((x,d)=>x+Object.keys(d).length,0),0);
- const keep={};S.halaqat.forEach(h=>{const k=(h.name||'').trim();if(!keep[k]||wt(h)>wt(keep[k]))keep[k]=h});
- const nb=S.halaqat.length;S.halaqat=S.halaqat.filter(h=>keep[(h.name||'').trim()]===h);
+ const dk=h=>(h.name||'').trim()||('#id:'+h.id);
+ const keep={};S.halaqat.forEach(h=>{const k=dk(h);if(!keep[k]||wt(h)>wt(keep[k]))keep[k]=h});
+ const nb=S.halaqat.length;S.halaqat=S.halaqat.filter(h=>keep[dk(h)]===h);
  if(!S.weeks)try{preBak(JSON.stringify(S))}catch(e){}
  norm();try{localStorage.setItem('maydan',JSON.stringify(S))}catch(e){}
  histSync();
@@ -601,6 +620,120 @@ HA=0;histSync();
 timer();render();if(window._seeded){window._seeded=0;toast('تم تحميل البيانات من ملف النسخة')}setInterval(()=>{$('dt').textContent=dateText()},60000);
 </script>
 
+<script id="md-ext">
+/* ===== إضافات: الميداليات، المشاركون، التقارير، تصدير Excel، تنسيق الإعدادات ===== */
+(function(){
+const MED=[['num','🏅 ميدالية رقمية (ذهبية/فضية/برونزية)'],['👑','👑 تاج'],['🥇','🥇 ميدالية ذهبية'],['🥈','🥈 ميدالية فضية'],['🥉','🥉 ميدالية برونزية'],['🏆','🏆 كأس'],['🎖️','🎖️ وسام'],['⭐','⭐ نجمة'],['🌟','🌟 نجمة لامعة'],['💎','💎 جوهرة'],['🔥','🔥 شعلة'],['🚀','🚀 صاروخ'],['🦅','🦅 صقر']];
+const MC=[['#f5c518','#a87400','#fff3b0'],['#dfe3e8','#7b838c','#ffffff'],['#e3a672','#7d4a1f','#fbe3cc']],DEFM=['num','🥈','🥉'];
+window.medalH=function(i){const m=(S.feat.medals&&S.feat.medals[i])||DEFM[i];if(m!=='num')return m;const c=MC[i]||MC[0];
+ return `<svg viewBox="0 0 48 48" style="width:1em;height:1em;vertical-align:middle;display:inline-block"><path d="M13 1h9l5 15h-9z" fill="#d9534f"/><path d="M35 1h-9l-5 15h9z" fill="#2a6fb0"/><circle cx="24" cy="30" r="16" fill="${c[0]}" stroke="${c[1]}" stroke-width="2.5"/><circle cx="24" cy="30" r="12" fill="none" stroke="${c[2]}" stroke-width="1.6"/><text x="24" y="36.5" text-anchor="middle" font-size="18" font-weight="800" font-family="Tajawal,Arial,sans-serif" fill="${c[1]}">${i+1}</text></svg>`};
+window.setMed=function(i,v){S.feat.medals=Object.assign({},S.feat.medals||{});if(v==='')delete S.feat.medals[i];else S.feat.medals[i]=v;save();render()};
+window.crownAll=function(){S.feat.medals={0:'👑',1:'🥈',2:'🥉'};save();render()};
+window.resetMed=function(){S.feat.medals={};save();render()};
+const medCard=()=>`<div class="card" id="c-med"><h2>🏅 شكل المراكز الثلاثة الأولى</h2><div class="mut" style="margin-bottom:8px">الافتراضي: ميدالية ذهبية بالرقم 1 للأول. اختر الشكل الذي تريده لكل مركز في أي وقت.</div>`+
+ [0,1,2].map(i=>`<div class="line"><span>المركز ${i+1} <span style="font-size:24px">${window.medalH?medalH(i):['👑','🥈','🥉'][i]}</span></span><select onchange="setMed(${i},this.value)">${MED.map(m=>`<option value="${m[0]}" ${((S.feat.medals&&S.feat.medals[i])||DEFM[i])===m[0]?'selected':''}>${m[1]}</option>`).join('')}</select></div>`).join('')+
+ `<div class="row" style="margin-top:10px"><button class="btn" onclick="crownAll()">👑 إرجاع التاج للأول</button><button class="btn g" onclick="resetMed()">الإعداد الافتراضي (ميدالية رقم 1)</button></div></div>`;
+/* مشاركون: تعديل الأسماء والنقل */
+const MV=new Set();
+const mvn=()=>{const e=document.getElementById('mvn');if(e)e.textContent='المحدد: '+MV.size};
+window.mvT=(id,on)=>{on?MV.add(id):MV.delete(id);mvn()};
+window.mvAll=(h,on)=>{(H(h)||{students:[]}).students.forEach(s=>on?MV.add(s.id):MV.delete(s.id));document.querySelectorAll('.mvc[data-h="'+h+'"]').forEach(c=>c.checked=on);mvn()};
+window.mvClr=()=>{MV.clear();document.querySelectorAll('.mvc').forEach(c=>c.checked=false);mvn()};
+window.renSt=function(h,id,el){const x=H(h),st=x&&x.students.find(s=>s.id===id);if(!st)return;const v=el.value.trim();
+ if(!v){el.value=st.name;return toast('الاسم لا يكون فارغًا')}
+ if(x.students.some(s=>s.id!==id&&s.name===v)){el.value=st.name;return toast('الاسم موجود في الحلقة')}
+ if(v===st.name)return;if(!st.sn)st.sn=st.name;st.name=v;save();toast('تم حفظ الاسم — الدرجات كما هي')};
+window.mvGo=function(){const t=$('mvt').value,T2=H(t);if(!T2||!MV.size)return toast('حدد مشاركًا واحدًا على الأقل');
+ const n=S.halaqat.reduce((a,h)=>a+(h.id!==t?h.students.filter(s=>MV.has(s.id)).length:0),0);if(!n)return toast('المحددون موجودون في هذه الحلقة أصلًا');
+ ask('نقل '+n+' مشارك إلى «'+T2.name+'» مع كل درجاتهم وملاحظاتهم؟',()=>{S.halaqat.forEach(h=>{if(h.id===t)return;const mv=h.students.filter(s=>MV.has(s.id));if(!mv.length)return;h.students=h.students.filter(s=>!MV.has(s.id));mv.forEach(s=>{if(!s.sn)s.sn=s.name;T2.students.push(s)})});MV.clear();save();render();toast('تم نقل '+n+' مشارك')})};
+const stCard=()=>`<div class="card" id="c-stu"><h2>👥 المشاركون: تعديل الأسماء والنقل</h2><div class="mut" style="margin-bottom:8px">عدّل أي اسم دون المساس بالنقاط والرصد. لنقل مشاركين: حدّدهم (أو «تحديد الكل» للحلقة) ثم اختر الحلقة الجديدة من الشريط أسفل القائمة.</div>`+
+ S.halaqat.map(h=>`<details class="stg"><summary><b>${esc(h.name)}</b><span class="mut">(${h.students.length})</span><label class="mut" onclick="event.stopPropagation()" style="margin-inline-start:auto"><input type="checkbox" onchange="mvAll('${h.id}',this.checked)"> تحديد الكل</label></summary>`+
+ (h.students.map(s=>`<div class="line"><input type="checkbox" class="mvc" data-h="${h.id}" ${MV.has(s.id)?'checked':''} onchange="mvT('${s.id}',this.checked)"><input value="${esc(s.name)}" onchange="renSt('${h.id}','${s.id}',this)" style="flex:1;min-width:150px"><span class="mut">${total(s)} ${esc(T('pts'))}</span></div>`).join('')||'<div class="mut">لا يوجد مشاركون</div>')+'</details>').join('')+
+ `<div class="row mvbar"><span id="mvn" class="mut">المحدد: ${MV.size}</span><span class="mut">نقل إلى:</span><select id="mvt">${S.halaqat.map(h=>`<option value="${h.id}">${esc(h.name)}</option>`).join('')}</select><button class="btn" onclick="mvGo()">↪ نقل المحدد</button><button class="btn g" onclick="mvClr()">إلغاء التحديد</button></div></div>`;
+/* بيانات التقارير */
+const wsum=(s,w)=>Object.values((s.scores||{})[w]||{}).reduce((b,d)=>b+Object.values(d).reduce((x,v)=>x+(+v||0),0),0);
+function buildRows(st){let l=S.halaqat.flatMap((h,hi)=>h.students.map(s=>({s,h,hi,name:s.name,hq:h.name,pts:total(s)})));
+ l.sort((a,b)=>b.pts-a.pts);const c={};l.forEach((r,i)=>{r.rk=i+1;c[r.h.id]=(c[r.h.id]||0)+1;r.hrk=c[r.h.id];r.wk=S.weeks.map(w=>wsum(r.s,w.id));r.cnt=r.wk.filter(x=>x>0).length;r.avg=r.cnt?Math.round(r.pts/r.cnt):0;r.last=wsum(r.s,S.curWeek)});
+ const tot=l.length;if(st.scope==='h')l=l.filter(r=>r.h.id===st.h);if(st.scope==='s')l=l.filter(r=>r.s.id===st.s);return{rows:l,tot}}
+const RP={scope:'all',h:'',s:''},XL=Object.assign({scope:'all',h:'',s:'',al:'right',cols:['rank','name','hq','pts','cnt','avg','last']},(()=>{try{return JSON.parse(localStorage.getItem('mdxl'))||{}}catch(e){return{}}})());XL.scope='all';XL.h='';XL.s='';
+const sel=(o,v,fn)=>`<select onchange="${fn}">${o.map(x=>`<option value="${x[0]}" ${x[0]===v?'selected':''}>${x[1]}</option>`).join('')}</select>`;
+function scUI(st,w){if(!H(st.h))st.h=S.halaqat[0]?S.halaqat[0].id:'';const hs=H(st.h);
+ let h=`<div class="line"><span>النطاق</span>${sel([['all','كل الحلقات'],['h','حلقة محددة'],['s','مشارك مخصص']],st.scope,`xSet('${w}','scope',this.value)`)}</div>`;
+ if(st.scope!=='all')h+=`<div class="line"><span>الحلقة</span>${sel(S.halaqat.map(x=>[x.id,esc(x.name)]),st.h,`xSet('${w}','h',this.value)`)}</div>`;
+ if(st.scope==='s')h+=`<div class="line"><span>المشارك</span>${sel([['','— اختر —']].concat(((hs&&hs.students)||[]).map(x=>[x.id,esc(x.name)])),st.s,`xSet('${w}','s',this.value)`)}</div>`;return h}
+const ST={rp:RP,xl:XL};
+window.xSet=function(w,k,v){const st=ST[w];st[k]=v;if(k==='h')st.s='';if(k==='cols'){}refresh(w)};
+function refresh(w){const e=document.getElementById(w==='rp'?'c-rep':'c-xl');if(e)e.innerHTML=w==='rp'?repIn():xlIn()}
+/* تقرير مختصر */
+const repIn=()=>`<h2>📄 تقرير مختصر (A4 / PDF)</h2><div class="mut" style="margin-bottom:8px">جدول مختصر لكل طلاب حلقة، أو لطالب واحد، أو لكل الحلقات. الطباعة تفتح نافذة الطباعة بحجم A4، ومنها «حفظ كـ PDF».</div>`+scUI(RP,'rp')+`<div class="row" style="margin-top:10px"><button class="btn" onclick="repPrint()">🖨 طباعة / PDF</button><button class="btn g" onclick="repShare()">📤 مشاركة</button></div>`;
+const repCard=()=>`<div class="card" id="c-rep">${repIn()}</div>`;
+function repDoc(){const st=RP;if(st.scope==='s'&&!st.s){toast('اختر المشارك أولًا');return null}
+ const{rows,tot}=buildRows(st);if(!rows.length){toast('لا توجد بيانات');return null}const pt=esc(T('pts'));
+ const sc=st.scope==='all'?'كل الحلقات':st.scope==='h'?esc((H(st.h)||{}).name):esc(rows[0].name);
+ let b=`<div class="rp"><style>.rp{direction:rtl;font-family:Tajawal,Tahoma,sans-serif;color:#143533;background:#fff}.rp .hd{text-align:center;border-bottom:3px solid #0b8f7e;padding-bottom:8px;margin-bottom:12px}.rp h1{margin:0;font-family:Amiri,serif;font-size:26px;color:#066a5f}.rp .hd p{margin:3px 0 0;font-size:12px;color:#6b8280;font-weight:700}.rp h2{font-family:Amiri,serif;font-size:18px;color:#066a5f;margin:14px 0 6px}.rp table{width:100%;border-collapse:collapse;margin-bottom:10px}.rp th{background:#dff1ee;color:#066a5f;padding:6px;font-size:12px;border:1px solid #c9dedb}.rp td{padding:5px 7px;font-size:12px;border:1px solid #dce8e6;font-weight:600}.rp tr{break-inside:avoid;page-break-inside:avoid}.rp tbody tr:nth-child(even){background:#f6fbfa}.rp .c{text-align:center}.rp tfoot td{background:#dff1ee;font-weight:800}.rp .ig{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}.rp .ig div{flex:1 1 30%;border:1px solid #c9dedb;border-top:4px solid #0b8f7e;border-radius:8px;text-align:center;padding:6px}.rp .ig b{display:block;font-size:18px;color:#066a5f}.rp .ig span{font-size:11px;color:#6b8280}</style><div class="hd"><h1>${esc(T('icon'))} ${esc(T('title'))} — تقرير مختصر</h1><p>${sc}${T('org')?' | '+esc(T('org')):''}</p><p>${esc(dateText()||'')} ${new Date().toLocaleDateString('ar-SA')}</p></div>`;
+ const tbl=(rs,hq)=>`<table><thead><tr><th style="width:36px">#</th><th>${esc(T('colStu'))}</th>${hq?'<th>الحلقة</th>':''}<th style="width:70px">${pt}</th><th style="width:70px">أسابيع مرصودة</th><th style="width:70px">المتوسط/أسبوع</th><th style="width:70px">الأسبوع الحالي</th></tr></thead><tbody>`+rs.map((r,i)=>`<tr><td class="c">${hq?r.rk:i+1}</td><td>${esc(r.name)}</td>${hq?`<td>${esc(r.hq)}</td>`:''}<td class="c" style="font-weight:800;color:#066a5f">${r.pts}</td><td class="c">${r.cnt}</td><td class="c">${r.avg}</td><td class="c">${r.last}</td></tr>`).join('')+`</tbody><tfoot><tr><td colspan="${hq?3:2}" class="c">المجموع (${rs.length})</td><td class="c">${rs.reduce((a,r)=>a+r.pts,0)}</td><td colspan="3"></td></tr></tfoot></table>`;
+ if(st.scope==='s'){const r=rows[0];b+=`<div class="ig"><div><b>${esc(r.name)}</b><span>${esc(r.hq)}</span></div><div><b>${r.pts}</b><span>مجموع ${pt}</span></div><div><b>${r.rk} / ${tot}</b><span>الترتيب العام</span></div><div><b>${r.hrk}</b><span>الترتيب في الحلقة</span></div><div><b>${r.avg}</b><span>المتوسط/أسبوع</span></div><div><b>${r.cnt}</b><span>أسابيع مرصودة</span></div></div><table><thead><tr><th style="width:36px">#</th><th>الأسبوع</th><th style="width:100px">${pt}</th></tr></thead><tbody>`+S.weeks.map((w,i)=>`<tr><td class="c">${i+1}</td><td>${esc(w.name)}</td><td class="c">${r.wk[i]}</td></tr>`).join('')+`</tbody><tfoot><tr><td colspan="2" class="c">المجموع</td><td class="c">${r.pts}</td></tr></tfoot></table>`}
+ else if(st.scope==='h')b+=tbl(rows.map((r,i)=>r),false);
+ else{b+=`<h2>ملخص الحلقات</h2><table><thead><tr><th>الحلقة</th><th style="width:60px">العدد</th><th style="width:80px">${pt}</th><th style="width:80px">المتوسط/طالب</th><th>الأول</th></tr></thead><tbody>`+S.halaqat.map(h=>{const rs=rows.filter(r=>r.h.id===h.id),p=rs.reduce((a,r)=>a+r.pts,0);return `<tr><td>${esc(h.name)}</td><td class="c">${rs.length}</td><td class="c">${p}</td><td class="c">${rs.length?Math.round(p/rs.length):0}</td><td>${rs[0]?esc(rs[0].name):'—'}</td></tr>`}).join('')+'</tbody></table>'+
+  S.halaqat.map(h=>{const rs=rows.filter(r=>r.h.id===h.id);return rs.length?`<h2>${esc(h.name)}</h2>`+tbl(rs,false):''}).join('')}
+ return{html:b+'</div>',rows,sc}}
+window.repPrint=function(){const d=repDoc();if(!d)return;const old=document.getElementById('prt');if(old)old.remove();const e=document.createElement('div');e.id='prt';e.innerHTML=d.html;document.body.appendChild(e);
+ const done=()=>{const x=document.getElementById('prt');if(x)x.remove();removeEventListener('afterprint',done)};addEventListener('afterprint',done);const t0=document.title;document.title=T('title')+' - تقرير';
+ (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(()=>{window.print();document.title=t0},250))};
+window.repShare=async function(){const d=repDoc();if(!d)return;const ttl=T('title')+' - تقرير '+d.sc.replace(/&[a-z#0-9]+;/g,''),pt=T('pts');
+ const html='<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(ttl)+'</title><style>@page{size:A4;margin:12mm}body{margin:12px;-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head><body>'+d.html+'</body></html>';
+ const f=new File([html],'تقرير.html',{type:'text/html'}),txt=ttl+'\n'+d.rows.slice(0,60).map((r,i)=>(i+1)+'. '+r.name+' — '+r.pts+' '+pt).join('\n');
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:ttl});return}if(navigator.share){await navigator.share({title:ttl,text:txt});return}}catch(e){if(e&&e.name==='AbortError')return}
+ dl(new Blob([html],{type:'text/html'}),'تقرير.html');toast('تم تنزيل التقرير — شاركه من جهازك')};
+function dl(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+/* تصدير Excel */
+const XC=[['rank','الترتيب العام'],['name','الاسم'],['hq','الحلقة'],['hrk','ترتيب الحلقة'],['pts','المجموع'],['cnt','أسابيع مرصودة'],['avg','المتوسط/أسبوع'],['last','الأسبوع الحالي'],['wks','نقاط كل أسبوع (عمود لكل أسبوع)']];
+window.xlCol=(k,on)=>{XL.cols=XL.cols.filter(x=>x!==k);if(on)XL.cols.push(k);xlSave()};
+const xlSave=()=>{try{localStorage.setItem('mdxl',JSON.stringify({al:XL.al,cols:XL.cols}))}catch(e){}};
+window.xlAl=v=>{XL.al=v;xlSave();refresh('xl')};
+const xlIn=()=>`<h2>📊 تصدير إلى Excel</h2><div class="mut" style="margin-bottom:8px">بنفس بيانات التقرير. اختر النطاق والبنود وموضع الجدول في الصفحة.</div>`+scUI(XL,'xl')+`<div class="gl">البنود التي تظهر في الملف</div><div class="chk">`+XC.map(c=>`<label><input type="checkbox" ${XL.cols.includes(c[0])?'checked':''} onchange="xlCol('${c[0]}',this.checked)"> ${c[1]}</label>`).join('')+`</div><div class="line"><span>موضع الجدول</span>${sel([['right','يمين'],['center','منتصف'],['left','يسار']],XL.al,'xlAl(this.value)')}</div><div class="row" style="margin-top:10px"><button class="btn" onclick="xlGo()">⬇ تصدير Excel</button></div>`;
+const xlCard=()=>`<div class="card" id="c-xl">${xlIn()}</div>`;
+const CT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc=d=>{let c=0xFFFFFFFF;for(let i=0;i<d.length;i++)c=CT[(c^d[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0};
+function zip(files){const te=new TextEncoder(),L=[],C=[];let off=0;files.forEach(f=>{const nm=te.encode(f.n),d=te.encode(f.d),c=crc(d),lh=new DataView(new ArrayBuffer(30));
+ lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(12,0x21,true);lh.setUint32(14,c,true);lh.setUint32(18,d.length,true);lh.setUint32(22,d.length,true);lh.setUint16(26,nm.length,true);L.push(new Uint8Array(lh.buffer),nm,d);
+ const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(14,0x21,true);ch.setUint32(16,c,true);ch.setUint32(20,d.length,true);ch.setUint32(24,d.length,true);ch.setUint16(28,nm.length,true);ch.setUint32(42,off,true);C.push(new Uint8Array(ch.buffer),nm);off+=30+nm.length+d.length});
+ const cs=C.reduce((a,x)=>a+x.length,0),e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+ return new Blob([...L,...C,new Uint8Array(e.buffer)],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})}
+const X=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,'');
+const CL=n=>{let s='';n++;while(n>0){const m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26)}return s};
+function xlsx(title,sub,cols,rows,al){const n=cols.length,W=cols.reduce((a,c)=>a+c.w,0),pad=al==='center'?Math.max(0,Math.round((150-W)/16)):0,rtl=al!=='left';
+ const cell=(c,r,v,s,num)=>`<c r="${CL(c)}${r}" s="${s}"${num?'':' t="inlineStr"'}>${num?`<v>${v}</v>`:`<is><t xml:space="preserve">${X(v)}</t></is>`}</c>`;
+ let sd=`<row r="1" ht="30" customHeight="1">${cell(pad,1,title,4)}</row><row r="2">${cell(pad,2,sub,7)}</row><row r="4" ht="26" customHeight="1">`+cols.map((c,i)=>cell(pad+i,4,c.h,1)).join('')+'</row>';
+ rows.forEach((r,ri)=>{const alt=ri%2;sd+=`<row r="${5+ri}">`+cols.map((c,i)=>{const v=c.f(r);return typeof v==='number'?cell(pad+i,5+ri,v,alt?6:3,1):cell(pad+i,5+ri,v,alt?5:2)}).join('')+'</row>'});
+ const last=CL(pad+n-1),cw=(pad?`<col min="1" max="${pad}" width="8" customWidth="1"/>`:'')+cols.map((c,i)=>`<col min="${pad+i+1}" max="${pad+i+1}" width="${c.w}" customWidth="1"/>`).join('');
+ const sheet=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView rightToLeft="${rtl?1:0}" workbookViewId="0" showGridLines="0"/></sheetViews><sheetFormatPr defaultRowHeight="18"/><cols>${cw}</cols><sheetData>${sd}</sheetData><mergeCells count="2"><mergeCell ref="${CL(pad)}1:${last}1"/><mergeCell ref="${CL(pad)}2:${last}2"/></mergeCells><pageSetup paperSize="9" orientation="portrait" fitToHeight="0"/></worksheet>`;
+ const bd='<border><left style="thin"><color rgb="FFC9DEDB"/></left><right style="thin"><color rgb="FFC9DEDB"/></right><top style="thin"><color rgb="FFC9DEDB"/></top><bottom style="thin"><color rgb="FFC9DEDB"/></bottom><diagonal/></border>',ta=`<alignment horizontal="${al}" vertical="center" wrapText="1"/>`,ca='<alignment horizontal="center" vertical="center"/>';
+ const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="4"><font><sz val="11"/><name val="Arial"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Arial"/></font><font><b/><sz val="16"/><color rgb="FF066A5F"/><name val="Arial"/></font><font><sz val="10"/><color rgb="FF6B8280"/><name val="Arial"/></font></fonts><fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0B8F7E"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFDFF1EE"/></patternFill></fill></fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>${bd}</borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="8"><xf/><xf fontId="1" fillId="2" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">${ca}</xf><xf borderId="1" applyBorder="1" applyAlignment="1">${ta}</xf><xf borderId="1" applyBorder="1" applyAlignment="1">${ca}</xf><xf fontId="2" applyFont="1" applyAlignment="1">${ca}</xf><xf fillId="3" borderId="1" applyFill="1" applyBorder="1" applyAlignment="1">${ta}</xf><xf fillId="3" borderId="1" applyFill="1" applyBorder="1" applyAlignment="1">${ca}</xf><xf fontId="3" applyFont="1" applyAlignment="1">${ca}</xf></cellXfs></styleSheet>`;
+ const R='http://schemas.openxmlformats.org/';return zip([{n:'[Content_Types].xml',d:`<?xml version="1.0" encoding="UTF-8"?><Types xmlns="${R}package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`},
+ {n:'_rels/.rels',d:`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="${R}package/2006/relationships"><Relationship Id="rId1" Type="${R}officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
+ {n:'xl/workbook.xml',d:`<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="${R}spreadsheetml/2006/main" xmlns:r="${R}officeDocument/2006/relationships"><sheets><sheet name="الإحصائيات" sheetId="1" r:id="rId1"/></sheets></workbook>`},
+ {n:'xl/_rels/workbook.xml.rels',d:`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="${R}package/2006/relationships"><Relationship Id="rId1" Type="${R}officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${R}officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`},
+ {n:'xl/styles.xml',d:styles},{n:'xl/worksheets/sheet1.xml',d:sheet}])}
+window.xlGo=function(){const st=XL;if(st.scope==='s'&&!st.s)return toast('اختر المشارك أولًا');if(!XL.cols.length)return toast('اختر بندًا واحدًا على الأقل');
+ const{rows}=buildRows(st);if(!rows.length)return toast('لا توجد بيانات');const cols=[];
+ XC.forEach(c=>{if(!XL.cols.includes(c[0]))return;if(c[0]==='wks')S.weeks.forEach((w,i)=>cols.push({h:w.name,w:14,f:r=>r.wk[i]}));else cols.push({h:c[1],w:c[0]==='name'?30:c[0]==='hq'?28:14,f:r=>r[c[0]]})});
+ const sc=st.scope==='all'?'كل الحلقات':st.scope==='h'?(H(st.h)||{}).name:rows[0].name;
+ dl(xlsx(T('title')+' — إحصائيات',sc+(dateText()?' | '+dateText():'')+' | '+new Date().toLocaleDateString('ar-SA'),cols,rows,XL.al),(T('title')+'-إحصائيات').replace(/[\\\/:*?"<>|]/g,'')+'.xlsx');toast('تم تصدير الملف')};
+window._xlsxTest=xlsx;window._repDoc=repDoc;
+/* تنسيق الإعدادات */
+const _sv=settingsV;window.settingsV=settingsV=function(){const h=_sv(),k='<div class="card"><h2>نسخة احتياطية</h2>',nw=medCard()+stCard()+repCard()+xlCard();return h.includes(k)?h.replace(k,nw+k):h+nw};
+const OPEN=new Set();
+function polish(){const cs=[...document.querySelectorAll('#app .card')].filter(c=>c.querySelector(':scope>h2'));if(cs.length<3)return;
+ cs.forEach((c,i)=>{c.classList.add('sc');const t=c.querySelector(':scope>h2').textContent.trim();if(!OPEN.has(t))c.classList.add('cl');c.dataset.t=t});
+ const nv=document.createElement('div');nv.className='snav';nv.innerHTML=cs.map((c,i)=>`<button onclick="scGo(${i})">${esc(c.dataset.t.replace(/[🔒⚠]/g,'').trim())}</button>`).join('')+'<button class="ac" onclick="scAll(true)">فتح الكل</button><button class="ac" onclick="scAll(false)">طيّ الكل</button>';cs[0].parentNode.insertBefore(nv,cs[0])}
+window.scGo=i=>{const c=document.querySelectorAll('#app .card.sc')[i];if(!c)return;c.classList.remove('cl');OPEN.add(c.dataset.t);c.scrollIntoView({behavior:'smooth',block:'start'})};
+window.scAll=on=>document.querySelectorAll('#app .card.sc').forEach(c=>{c.classList.toggle('cl',!on);on?OPEN.add(c.dataset.t):OPEN.delete(c.dataset.t)});
+document.addEventListener('click',e=>{const h=e.target.closest&&e.target.closest('#app .card.sc>h2');if(!h)return;const c=h.parentNode;c.classList.toggle('cl');c.classList.contains('cl')?OPEN.delete(c.dataset.t):OPEN.add(c.dataset.t)});
+const _r=render;window.render=render=function(){const r=_r.apply(this,arguments);try{if(tab==='set')polish()}catch(e){}return r};
+try{render()}catch(e){}
+})();
+</script>
 <script type="module">
 /* ============ إعدادات Firebase — الصق هنا بيانات مشروعك ============ */
 const firebaseConfig = {
@@ -669,12 +802,14 @@ else{
   try{const o=JSON.parse(snap.data().data),mine=+localStorage.getItem('maydan_dev_ts_'+k)||0;
    if(o&&o.ts>mine&&window.devApply)devApply(k,o.v,o.ts)}catch(e){}},()=>{}));
  st('⏳ جارٍ الاتصال…','wait');
- onSnapshot(metaRef,snap=>{
+ setTimeout(()=>{if(!ready)st('⚠ لا اتصال بالسحابة — لن يُرفع شيء حتى يتأكد الاتصال','err')},15000);
+ /* إصلاح: لا نعتبر القاعدة «فارغة» ولا نرفع شيئًا قبل وصول رد مؤكَّد من خادم السحابة (وليس من كاش الجهاز) */
+ onSnapshot(metaRef,{includeMetadataChanges:true},snap=>{
   const s=snap.exists()?snap.data().data:null;
-  if(!ready){init.m=s;init.mOk=true;tryInit();return}
+  if(!ready){if(snap.metadata.fromCache)return;init.m=s;init.mOk=true;tryInit();return}
   if(snap.metadata.hasPendingWrites)return;incoming('m','main',s)},onErr);
- onSnapshot(hCol,snap=>{
-  if(!ready){if(!init.hOk){init.h={};snap.docs.forEach(d=>init.h[d.id]=d.data().data);init.hOk=true;tryInit()}return}
+ onSnapshot(hCol,{includeMetadataChanges:true},snap=>{
+  if(!ready){if(snap.metadata.fromCache)return;if(!init.hOk){init.h={};snap.docs.forEach(d=>init.h[d.id]=d.data().data);init.hOk=true;tryInit()}return}
   snap.docChanges().forEach(c=>{if(c.doc.metadata.hasPendingWrites)return;
    incoming('h',c.doc.id,c.type==='removed'?null:c.doc.data().data)})},onErr);
 }
