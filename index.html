@@ -838,14 +838,15 @@ else{
   else if(!conn||lastErr==='net'){t='⚠ غير متصل بالسحابة'+(n>0?pend:' — لن تصلك تحديثات الأجهزة الأخرى')+last;c='err'}
   else if(n>0||pushing||tmr||forcing){if((pushing||forcing)&&Date.now()-pushT0>15000){t='⚠ الرفع متعثر'+pend+last;c='err'}else{t='⏳ جارٍ رفع '+(n>0?nT(n):'التعديلات')+'…';c='wait'}}
   else{t='☁ متزامن ✓';c='ok'}
+  const c0=c;  /* الحالة الحقيقية قبل إضافة تنبيه الإصدار الأحدث */
   if(window._newVer){t+=' • 🔄 يوجد إصدار أحدث، اضغط هنا للتحديث';if(c==='ok')c='wait'}
   e.onclick=()=>{if(window._newVer){if(n>0&&!confirm('يوجد رصد لم يُرفع بعد، وسيبقى محفوظًا في الجهاز. تحديث الآن؟'))return;location.reload();return}if(window.toast)toast(e.dataset.full)};
-  const sh=c==='ok'?'☁ متزامن ✓':c==='wait'?(lastErr==='busy'||pushing||tmr||forcing||n>0?'⏳ رفع '+(n>0?n:'…'):'⏳ جارٍ الاتصال'):(lastErr==='perm'?'⚠ الصلاحيات':n>0?'⚠ '+n+' لم يُرفع':'⚠ غير متصل');
+  const sh=c0==='ok'?'☁ متزامن ✓':c==='wait'?(lastErr==='busy'||pushing||tmr||forcing||n>0?'⏳ رفع '+(n>0?n:'…'):'⏳ جارٍ الاتصال'):(lastErr==='perm'?'⚠ الصلاحيات':n>0?'⚠ '+n+' لم يُرفع':'⚠ غير متصل');
   /* في الجوال: نقيس عرض سطر التاريخ لتأخذ العلامة المساحة الفارغة بجانبه فقط، ونختصر النص أكثر إن ضاقت المساحة */
   let avail=999;try{const dt=document.getElementById('dt'),hd=e.parentNode;if(dt&&hd&&matchMedia('(max-width:560px)').matches){const rg=document.createRange();rg.selectNodeContents(dt);const dr=rg.getBoundingClientRect(),hr=hd.getBoundingClientRect(),w=Math.ceil(dr.width);hd.style.setProperty('--dtw',w+'px');avail=(hd.clientWidth-w)/2-10;
    /* العلامة تحت زر ملء الشاشة على مستوى سطر التاريخ تمامًا، فلا تلمس العنوان ولا الأزرار */
    if(dr.height)e.style.top=Math.round(dr.top-hr.top+(dr.height-(e.offsetHeight||18))/2)+'px'}else e.style.top=''}catch(x){}
-  const tiny=c==='ok'?'☁ ✓':c==='wait'?'⏳'+(n>0?' '+n:''):'⚠'+(n>0?' '+n:'');
+  const tiny=c0==='ok'?'☁ ✓':c0==='wait'?'⏳'+(n>0?' '+n:''):'⚠'+(n>0?' '+n:'');
   const nv=window._newVer?' 🔄':'',shN=(avail<74?tiny:sh)+nv;
   e.innerHTML='<span class="fl"></span><span class="sh"></span>';e.firstChild.textContent=t;e.lastChild.textContent=shN;e.dataset.s=c;e.dataset.full=t;
   if(avail<999&&e.scrollWidth>e.clientWidth+1)e.lastChild.textContent=tiny+nv;  /* إن لم يتسع النص المختصر نستخدم الأقصر */
