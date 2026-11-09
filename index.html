@@ -114,8 +114,7 @@ body.fit #app{flex:1;min-height:0;display:flex;flex-direction:column}
 @media print{@page{size:A4;margin:12mm}html,body{height:auto!important;overflow:visible!important;display:block!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body>*:not(#prt){display:none!important}#prt{display:block!important}}
 #cs{position:absolute;bottom:10px;right:24px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px;white-space:normal;max-width:calc(100% - 48px);line-height:1.5;cursor:help}#cs[data-s=err]{background:#d9534f;color:#fff}#cs .sh{display:none}
 @media(max-width:560px){#cs{top:46px;bottom:auto;right:6px;max-width:calc((100% - var(--dtw,240px))/2 - 10px);min-width:0;font-size:10px;padding:2px 7px;text-align:center;line-height:1.35;z-index:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.fit #cs{top:42px}#cs .fl{display:none}#cs .sh{display:inline}
-.pc .pr .bd{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;max-width:100%!important;line-height:1.35;font-size:10px!important;padding:2px 6px!important;display:inline-block}
-.pc.p2,.pc.p3{height:auto!important}body.fit .pc.p2{min-height:84%}body.fit .pc.p3{min-height:72%}body:not(.fit) .pc.p2{min-height:205px}body:not(.fit) .pc.p3{min-height:180px}}#cs[data-s=wait]{background:#f0ad4e;color:#222}#cs[data-s=ok]{background:rgba(40,167,69,.9);color:#fff}#cs[data-s=off]{opacity:.7}
+.pc .pr .bd{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;max-width:100%!important;line-height:1.35;font-size:10px!important;padding:2px 6px!important;display:inline-block}}#cs[data-s=wait]{background:#f0ad4e;color:#222}#cs[data-s=ok]{background:rgba(40,167,69,.9);color:#fff}#cs[data-s=off]{opacity:.7}
 #app .card.sc,.snav{width:100%;flex:0 0 100%;max-width:100%;box-sizing:border-box;grid-column:1/-1;display:block}
 #app .card.sc>h2{display:flex}
 .snav{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex!important;gap:6px;overflow-x:auto;white-space:nowrap;margin-bottom:8px}
@@ -332,7 +331,7 @@ function ask(msg,cb,o){o=o||{};const d=document.createElement('div');d.className
  d.innerHTML='<div class="card" style="max-width:340px;text-align:center;margin:0"><p style="font-weight:700">'+esc(msg)+'</p>'+(o.input?'<input id="aiv" type="password" style="width:100%;text-align:center;margin-bottom:10px">':'')+'<div class="row" style="justify-content:center"><button class="btn'+(o.red?' x':'')+'" id="ay">'+(o.yes||'موافق')+'</button>'+(o.one?'':'<button class="btn g" id="an">إلغاء</button>')+'</div></div>';
  document.body.appendChild(d);const i=d.querySelector('#aiv');if(i){i.focus();i.onkeydown=e=>{if(e.key==='Enter')d.querySelector('#ay').click()}}
  const n=d.querySelector('#an');if(n)n.onclick=()=>d.remove();d.querySelector('#ay').onclick=()=>{const v=i?i.value:'';d.remove();cb(v)}}
-function toast(m){const d=document.createElement('div');d.className='ovl';d.textContent=m;d.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#143533;color:#fff;padding:10px 18px;border-radius:99px;z-index:99';document.body.appendChild(d);setTimeout(()=>d.remove(),2000)}
+function toast(m){const d=document.createElement('div');d.className='tst';d.textContent=m;d.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#143533;color:#fff;padding:10px 18px;border-radius:99px;z-index:99';document.body.appendChild(d);setTimeout(()=>d.remove(),2000)}
 /* أقفال */
 const LKI=k=>S.locks[k]&&S.locks[k].on?' 🔒':'';
 const locked=k=>S.locks[k]&&S.locks[k].on&&!unlocked[k];
@@ -521,7 +520,7 @@ function fullBackup(){
 async function mdSource(){let src=null;
  try{if(/^https?:/.test(location.protocol)){const r=await fetch(location.href.split('#')[0],{cache:'no-store'});if(r.ok){const x=await r.text();if(x.indexOf('function settingsV')>0&&x.indexOf('</main>')>0)src=x}}}catch(e){}
  if(!src){const c=document.documentElement.cloneNode(true);
-  c.querySelectorAll('.ovl,#utoast,iframe,#prt').forEach(e=>e.remove());
+  c.querySelectorAll('.ovl,.tst,#utoast,iframe,#prt').forEach(e=>e.remove());
   ['app','modes','ttl','ico','ico2','org','dt'].forEach(id=>{const e=c.querySelector('#'+id);if(e)e.innerHTML=''});
   const cs=c.querySelector('#cs');if(cs){cs.textContent='☁ …';cs.setAttribute('data-s','off')}
   src='<!DOCTYPE html>\n'+c.outerHTML}
@@ -621,7 +620,22 @@ function cloudApply(batch,reset){
  timer();
  if(cloudBusy()){window._rp=1;return}
  render()}
-setInterval(()=>{if(window._rp&&!cloudBusy()){window._rp=0;render()}},500);
+setInterval(()=>{if(window._rp&&!cloudBusy()){window._rp=0;render()}},200);
+/* منصة المراكز الثلاثة (جوال ولابتوب): كل بطاقة تتسع لمحتواها (اسم الحلقة كاملًا) مع بقاء الترتيب دائمًا: الأول أطول من الثاني، والثاني أطول من الثالث */
+function fixPod(){try{const pd=document.querySelector('.podium');if(!pd)return;const cs=[1,2,3].map(k=>pd.querySelector('.pc.p'+k));
+ cs.forEach(c=>c&&c.style.removeProperty('height'));pd.style.removeProperty('min-height');
+ if(!cs[0]||!pd.offsetParent)return;
+ const base=cs.map(c=>c?c.offsetHeight:0);
+ const nat=cs.map(c=>{if(!c)return 0;c.style.setProperty('height','auto','important');const h=c.offsetHeight+6;c.style.removeProperty('height');return h});  /* +6: مسافة تحت اسم الحلقة */
+ const step=Math.max(14,Math.round(base[0]*.1)),h=[0,0,0];
+ h[2]=cs[2]?Math.max(base[2],nat[2]):0;
+ h[1]=cs[1]?Math.max(base[1],nat[1],h[2]+step):0;
+ h[0]=Math.max(base[0],nat[0],h[1]+step);
+ cs.forEach((c,i)=>c&&c.style.setProperty('height',h[i]+'px','important'));
+ const need=h[0]+parseFloat(getComputedStyle(pd).paddingTop||0);if(need>pd.clientHeight)pd.style.setProperty('min-height',Math.ceil(need)+'px')}catch(e){console.error(e)}}
+{const _render=render;render=function(){const r=_render.apply(this,arguments);fixPod();return r}}
+addEventListener('resize',()=>fixPod());try{document.fonts&&document.fonts.ready.then(()=>fixPod())}catch(e){}
+fixPod();
 /* كشف إصدار أحدث من الموقع (بعد رفع ملف جديد على GitHub): تظهر إشارة في علامة السحابة للتحديث بضغطة */
 (function(){if(!/^https?:/.test(location.protocol))return;let v0=null;
  const hs=x=>{let h=0;for(let i=0;i<x.length;i++)h=(h*31+x.charCodeAt(i))|0;return x.length+':'+h};
@@ -758,18 +772,20 @@ const firebaseConfig = {
 };
 /* ================================================================== */
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,collection,onSnapshot,setDoc,deleteDoc,serverTimestamp,runTransaction} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {initializeFirestore,memoryLocalCache,doc,collection,onSnapshot,setDoc,deleteDoc,serverTimestamp,runTransaction} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const st=(t,c)=>{const e=document.getElementById('cs');if(e){e.textContent=t;e.dataset.s=c}};
 if(/PASTE/.test(firebaseConfig.apiKey)){st('☁ غير مفعّل (يعمل محليًا)','off')}
 else{
  const app=initializeApp(firebaseConfig);
- let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){db=initializeFirestore(app,{})}
+ /* ذاكرة مؤقتة فقط: بلا IndexedDB وبلا «تبويب قائد» بين التبويبات — كانت سبب بطء الاتصال وانقطاعه المتكرر في الجوال.
+    حفظ البيانات في الجهاز يتم أصلًا عبر localStorage والدمج الثلاثي، فلا يضيع شيء عند الانقطاع */
+ let db;try{db=initializeFirestore(app,{localCache:memoryLocalCache()})}catch(e){db=initializeFirestore(app,{})}
  const metaRef=doc(db,'maydan_meta','main'),hCol=collection(db,'maydan_halaqat');
  /* ===== مزامنة بالدمج: كل جهاز يرفع تغييراته فقط ويدمجها مع ما في السحابة داخل معاملة ذرّية، فلا يمسح رصدُ جهازٍ رصدَ جهازٍ آخر ===== */
  const sync={meta:null,h:{}};let ready=false,tmr=null,queue=[],pushing=false,retryT=null;const init={};
  /* حالة الاتصال الفعلية: live = آخر رد جاء من خادم السحابة نفسه (لا من كاش الجهاز)، lastOk = وقت آخر تأكيد من الخادم */
- let live=false,lastOk=0,lastErr=null,pushT0=0,forcing=false;const t0=Date.now();
+ let live=false,lostAt=0,lastOk=0,lastErr=null,pushT0=0,forcing=false;const t0=Date.now();
  const BK='maydan_sync_base';let base0=null;try{base0=JSON.parse(localStorage.getItem(BK)||'null')}catch(e){}
  const saveBase=()=>{try{localStorage.setItem(BK,JSON.stringify({m:sync.meta,h:sync.h}))}catch(e){try{localStorage.removeItem(BK)}catch(e2){}}};
  const split=()=>{const {halaqat,...rest}=S;rest.order=halaqat.map(h=>h.id);
@@ -815,7 +831,7 @@ else{
  /* أي خطأ في عرض العلامة لا يجوز أن يوقف المزامنة نفسها */
  function stat(){try{stat0()}catch(x){console.error(x)}}
  function stat0(){const e=document.getElementById('cs');if(!e)return;let n=0;try{n=pendingN()}catch(x){n=-1}
-  const on=navigator.onLine!==false,conn=on&&live,last=lastOk?' (آخر تأكيد '+hm(lastOk)+')':'',pend=n>0?' — لم يُرفع '+nT(n):n<0?' — ما رُصد هنا محفوظ في الجهاز':'';
+  const on=navigator.onLine!==false,conn=on&&(live||(lostAt&&Date.now()-lostAt<6000)||Date.now()-lastOk<6000),last=lastOk?' (آخر تأكيد '+hm(lastOk)+')':'',pend=n>0?' — لم يُرفع '+nT(n):n<0?' — ما رُصد هنا محفوظ في الجهاز':'';
   let t,c;
   if(lastErr==='perm'){t='⚠ السحابة ترفض الحفظ (الصلاحيات)'+pend;c='err'}
   else if(!ready){if(Date.now()-t0<15000&&on){t='⏳ جارٍ الاتصال بالسحابة…';c='wait'}else{t='⚠ غير متصل بالسحابة'+pend;c='err'}}
@@ -833,8 +849,8 @@ else{
   const nv=window._newVer?' 🔄':'',shN=(avail<74?tiny:sh)+nv;
   e.innerHTML='<span class="fl"></span><span class="sh"></span>';e.firstChild.textContent=t;e.lastChild.textContent=shN;e.dataset.s=c;e.dataset.full=t;
   if(avail<999&&e.scrollWidth>e.clientWidth+1)e.lastChild.textContent=tiny+nv;  /* إن لم يتسع النص المختصر نستخدم الأقصر */e.title=lastOk?'آخر تأكيد من خادم السحابة: '+new Date(lastOk).toLocaleTimeString('ar-SA'):'لم يصل أي تأكيد من خادم السحابة بعد'}
- setInterval(stat,1500);addEventListener('offline',stat);window.cloudStat=stat;
- const seen=snap=>{const fc=snap.metadata.fromCache;live=!fc;if(!fc)lastOk=Date.now();stat()};
+ setInterval(stat,1000);window.mdSync=()=>({ready,live,lostAt,lastOk:lastOk?new Date(lastOk).toLocaleTimeString():0,lastErr,pushing,pending:pendingN(),since:Math.round((Date.now()-t0)/1000)+'s'});addEventListener('offline',stat);window.cloudStat=stat;
+ const seen=snap=>{const fc=snap.metadata.fromCache;if(fc){if(live)lostAt=Date.now();live=false}else{live=true;lostAt=0;lastOk=Date.now();lastErr=lastErr==='net'?null:lastErr}stat()};
 
  async function txDoc(ref,k,id,loc){
   const b=getB(k,id);
@@ -846,20 +862,20 @@ else{
   if(k!=='m'||nl!=null)applyL(k,id,nl);
  }
  async function push(){
-  tmr=null;if(!ready)return;if(pushing){tmr=setTimeout(push,300);return}
+  tmr=null;if(!ready)return;if(pushing){tmr=setTimeout(push,100);return}
   pushing=true;pushT0=Date.now();clearTimeout(retryT);let ok=true;stat();
   try{const c=split(),jobs=[];
    if(!same(c.meta,sync.meta))jobs.push(txDoc(metaRef,'m','main',c.meta));
    for(const id in c.h)if(!same(c.h[id],sync.h[id]??null))jobs.push(txDoc(doc(hCol,id),'h',id,c.h[id]));
    for(const id of Object.keys(sync.h))if(!(id in c.h))jobs.push(txDoc(doc(hCol,id),'h',id,null));
    const rs=await Promise.allSettled(jobs);const bad=rs.find(x=>x.status==='rejected');
-   if(bad){ok=false;onErr(bad.reason);retryT=setTimeout(()=>window.cloudPush(),lastErr==='busy'?300+Math.random()*700:5000)}
+   if(bad){ok=false;onErr(bad.reason);retryT=setTimeout(()=>window.cloudPush(),lastErr==='busy'?150+Math.random()*350:3000)}
   }finally{pushing=false;saveBase();stat()}
   const q=queue;queue=[];q.forEach(x=>incoming(x.k,x.id,x.s));
   if(ok){const c=split();const dirty=!same(c.meta,sync.meta)||Object.keys(c.h).some(id=>!same(c.h[id],sync.h[id]??null))||Object.keys(sync.h).some(id=>!(id in c.h));
    if(dirty)window.cloudPush();else stat()}
  }
- window.cloudPush=()=>{if(!ready){stat();return}clearTimeout(tmr);tmr=setTimeout(push,300);stat()};
+ window.cloudPush=()=>{if(!ready){stat();return}clearTimeout(tmr);tmr=setTimeout(push,120);stat()};
  addEventListener('online',()=>{lastErr=null;window.cloudPush()});
 
  function incoming(k,id,s){
