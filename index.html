@@ -112,7 +112,7 @@ body.fit #app{flex:1;min-height:0;display:flex;flex-direction:column}
 .wkc{margin:8px 0;border:1px solid var(--ln);border-radius:14px;padding:10px}.wkc.cur{border-color:var(--pr);background:rgba(11,143,126,.07)}
 #prt{display:none}
 @media print{@page{size:A4;margin:12mm}html,body{height:auto!important;overflow:visible!important;display:block!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body>*:not(#prt){display:none!important}#prt{display:block!important}}
-#cs{position:absolute;bottom:10px;right:24px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px;white-space:normal;max-width:calc(100% - 48px);line-height:1.5;cursor:help}#cs[data-s=err]{background:#d9534f;color:#fff}#cs .sh{display:none}
+#cs{position:absolute;bottom:10px;right:24px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px;white-space:normal;max-width:calc(100% - 48px);line-height:1.5;cursor:help}#cs[data-s=err]{background:#d9534f;color:#fff}#cs .sh{display:none}#cs.cmp .fl{display:none}#cs.cmp .sh{display:inline}#cs.cmp,#cs.up{white-space:nowrap}
 @media(max-width:560px){#cs{top:46px;bottom:auto;right:6px;max-width:calc((100% - var(--dtw,240px))/2 - 10px);min-width:0;font-size:10px;padding:2px 7px;text-align:center;line-height:1.35;z-index:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.fit #cs{top:42px}#cs .fl{display:none}#cs .sh{display:inline}
 .pc .pr .bd{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;max-width:100%!important;line-height:1.35;font-size:10px!important;padding:2px 6px!important;display:inline-block}}#cs[data-s=wait]{background:#f0ad4e;color:#222}#cs[data-s=ok]{background:rgba(40,167,69,.9);color:#fff}#cs[data-s=off]{opacity:.7}
 #app .card.sc,.snav{width:100%;flex:0 0 100%;max-width:100%;box-sizing:border-box;grid-column:1/-1;display:block}
@@ -848,7 +848,16 @@ else{
   const tiny=c==='ok'?'☁ ✓':c==='wait'?'⏳'+(n>0?' '+n:''):'⚠'+(n>0?' '+n:'');
   const nv=window._newVer?' 🔄':'',shN=(avail<74?tiny:sh)+nv;
   e.innerHTML='<span class="fl"></span><span class="sh"></span>';e.firstChild.textContent=t;e.lastChild.textContent=shN;e.dataset.s=c;e.dataset.full=t;
-  if(avail<999&&e.scrollWidth>e.clientWidth+1)e.lastChild.textContent=tiny+nv;  /* إن لم يتسع النص المختصر نستخدم الأقصر */e.title=lastOk?'آخر تأكيد من خادم السحابة: '+new Date(lastOk).toLocaleTimeString('ar-SA'):'لم يصل أي تأكيد من خادم السحابة بعد'}
+  if(avail<999&&e.scrollWidth>e.clientWidth+1)e.lastChild.textContent=tiny+nv;  /* إن لم يتسع النص المختصر نستخدم الأقصر */
+  /* اللابتوب والآيباد وغيرها: العلامة أسفل زر ملء الشاشة مباشرة؛ النص الكامل إن اتسع المكان، وإلا المختصر، وإلا الأقصر — بلا تداخل مع العنوان أو التاريخ أو الأزرار */
+  try{const hd=e.parentNode;if(avail===999&&hd){const fs=document.getElementById('fsb'),fv=fs&&fs.offsetParent&&getComputedStyle(fs).display!=='none';
+   e.classList.add('up');e.style.bottom='auto';e.style.maxWidth='none';
+   e.style.top=(fv?fs.offsetTop+fs.offsetHeight+6:12)+'px';e.style.right=(fv?hd.clientWidth-(fs.offsetLeft+fs.offsetWidth):12)+'px';
+   const RR=el=>{const q=document.createRange();q.selectNodeContents(el);return q.getBoundingClientRect()};
+   const obs=[document.querySelector('header h1'),document.getElementById('dt'),document.getElementById('org')].filter(x=>x&&x.textContent.trim()).map(RR).concat([...document.querySelectorAll('#modes button,#tg')].map(b=>b.getBoundingClientRect()));
+   const hit=()=>{const r=e.getBoundingClientRect();return obs.some(b=>b.width&&!(r.right<=b.left+2||b.right<=r.left+2||r.bottom<=b.top+1||b.bottom<=r.top+1))};
+   e.classList.remove('cmp');if(hit()){e.classList.add('cmp');if(hit())e.lastChild.textContent=tiny+nv}}
+  else if(hd){e.classList.remove('up','cmp');e.style.bottom='';e.style.maxWidth='';e.style.right=''}}catch(x){}e.title=lastOk?'آخر تأكيد من خادم السحابة: '+new Date(lastOk).toLocaleTimeString('ar-SA'):'لم يصل أي تأكيد من خادم السحابة بعد'}
  setInterval(stat,1000);window.mdSync=()=>({ready,live,lostAt,lastOk:lastOk?new Date(lastOk).toLocaleTimeString():0,lastErr,pushing,pending:pendingN(),since:Math.round((Date.now()-t0)/1000)+'s'});addEventListener('offline',stat);window.cloudStat=stat;
  const seen=snap=>{const fc=snap.metadata.fromCache;if(fc){if(live)lostAt=Date.now();live=false}else{live=true;lostAt=0;lastOk=Date.now();lastErr=lastErr==='net'?null:lastErr}stat()};
 
