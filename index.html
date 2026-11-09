@@ -112,7 +112,10 @@ body.fit #app{flex:1;min-height:0;display:flex;flex-direction:column}
 .wkc{margin:8px 0;border:1px solid var(--ln);border-radius:14px;padding:10px}.wkc.cur{border-color:var(--pr);background:rgba(11,143,126,.07)}
 #prt{display:none}
 @media print{@page{size:A4;margin:12mm}html,body{height:auto!important;overflow:visible!important;display:block!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body>*:not(#prt){display:none!important}#prt{display:block!important}}
-#cs{position:absolute;bottom:10px;right:24px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px;white-space:normal;max-width:calc(100% - 48px);line-height:1.5;cursor:help}#cs[data-s=err]{background:#d9534f;color:#fff}#cs[data-s=wait]{background:#f0ad4e;color:#222}#cs[data-s=ok]{background:rgba(40,167,69,.9);color:#fff}#cs[data-s=off]{opacity:.7}
+#cs{position:absolute;bottom:10px;right:24px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px;white-space:normal;max-width:calc(100% - 48px);line-height:1.5;cursor:help}#cs[data-s=err]{background:#d9534f;color:#fff}#cs .sh{display:none}
+@media(max-width:560px){#cs{top:46px;bottom:auto;right:6px;max-width:calc((100% - var(--dtw,240px))/2 - 10px);min-width:0;font-size:10px;padding:2px 7px;text-align:center;line-height:1.35;z-index:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.fit #cs{top:42px}#cs .fl{display:none}#cs .sh{display:inline}
+.pc .pr .bd{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;max-width:100%!important;line-height:1.35;font-size:10px!important;padding:2px 6px!important;display:inline-block}
+.pc.p2,.pc.p3{height:auto!important}body.fit .pc.p2{min-height:84%}body.fit .pc.p3{min-height:72%}body:not(.fit) .pc.p2{min-height:205px}body:not(.fit) .pc.p3{min-height:180px}}#cs[data-s=wait]{background:#f0ad4e;color:#222}#cs[data-s=ok]{background:rgba(40,167,69,.9);color:#fff}#cs[data-s=off]{opacity:.7}
 #app .card.sc,.snav{width:100%;flex:0 0 100%;max-width:100%;box-sizing:border-box;grid-column:1/-1;display:block}
 #app .card.sc>h2{display:flex}
 .snav{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex!important;gap:6px;overflow-x:auto;white-space:nowrap;margin-bottom:8px}
@@ -809,7 +812,9 @@ else{
  const nT=n=>n===1?'تعديل واحد':n===2?'تعديلان':n<=10?n+' تعديلات':n+' تعديلًا';
  const hm=t=>new Date(t).toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
  /* علامة السحابة: لا تقول «متزامن» إلا إذا كان الخادم متصلًا فعلًا وأكد استلام كل ما في هذا الجهاز */
- function stat(){const e=document.getElementById('cs');if(!e)return;let n=0;try{n=pendingN()}catch(x){n=-1}
+ /* أي خطأ في عرض العلامة لا يجوز أن يوقف المزامنة نفسها */
+ function stat(){try{stat0()}catch(x){console.error(x)}}
+ function stat0(){const e=document.getElementById('cs');if(!e)return;let n=0;try{n=pendingN()}catch(x){n=-1}
   const on=navigator.onLine!==false,conn=on&&live,last=lastOk?' (آخر تأكيد '+hm(lastOk)+')':'',pend=n>0?' — لم يُرفع '+nT(n):n<0?' — ما رُصد هنا محفوظ في الجهاز':'';
   let t,c;
   if(lastErr==='perm'){t='⚠ السحابة ترفض الحفظ (الصلاحيات)'+pend;c='err'}
@@ -817,8 +822,17 @@ else{
   else if(!conn||lastErr==='net'){t='⚠ غير متصل بالسحابة'+(n>0?pend:' — لن تصلك تحديثات الأجهزة الأخرى')+last;c='err'}
   else if(n>0||pushing||tmr||forcing){if((pushing||forcing)&&Date.now()-pushT0>15000){t='⚠ الرفع متعثر'+pend+last;c='err'}else{t='⏳ جارٍ رفع '+(n>0?nT(n):'التعديلات')+'…';c='wait'}}
   else{t='☁ متزامن ✓';c='ok'}
-  if(window._newVer){t+=' • 🔄 يوجد إصدار أحدث، اضغط هنا للتحديث';if(c==='ok')c='wait';e.onclick=()=>{if(n>0&&!confirm('يوجد رصد لم يُرفع بعد، وسيبقى محفوظًا في الجهاز. تحديث الآن؟'))return;location.reload()}}
-  e.textContent=t;e.dataset.s=c;e.title=lastOk?'آخر تأكيد من خادم السحابة: '+new Date(lastOk).toLocaleTimeString('ar-SA'):'لم يصل أي تأكيد من خادم السحابة بعد'}
+  if(window._newVer){t+=' • 🔄 يوجد إصدار أحدث، اضغط هنا للتحديث';if(c==='ok')c='wait'}
+  e.onclick=()=>{if(window._newVer){if(n>0&&!confirm('يوجد رصد لم يُرفع بعد، وسيبقى محفوظًا في الجهاز. تحديث الآن؟'))return;location.reload();return}if(window.toast)toast(e.dataset.full)};
+  const sh=c==='ok'?'☁ متزامن ✓':c==='wait'?(lastErr==='busy'||pushing||tmr||forcing||n>0?'⏳ رفع '+(n>0?n:'…'):'⏳ جارٍ الاتصال'):(lastErr==='perm'?'⚠ الصلاحيات':n>0?'⚠ '+n+' لم يُرفع':'⚠ غير متصل');
+  /* في الجوال: نقيس عرض سطر التاريخ لتأخذ العلامة المساحة الفارغة بجانبه فقط، ونختصر النص أكثر إن ضاقت المساحة */
+  let avail=999;try{const dt=document.getElementById('dt'),hd=e.parentNode;if(dt&&hd&&matchMedia('(max-width:560px)').matches){const rg=document.createRange();rg.selectNodeContents(dt);const dr=rg.getBoundingClientRect(),hr=hd.getBoundingClientRect(),w=Math.ceil(dr.width);hd.style.setProperty('--dtw',w+'px');avail=(hd.clientWidth-w)/2-10;
+   /* العلامة تحت زر ملء الشاشة على مستوى سطر التاريخ تمامًا، فلا تلمس العنوان ولا الأزرار */
+   if(dr.height)e.style.top=Math.round(dr.top-hr.top+(dr.height-(e.offsetHeight||18))/2)+'px'}else e.style.top=''}catch(x){}
+  const tiny=c==='ok'?'☁ ✓':c==='wait'?'⏳'+(n>0?' '+n:''):'⚠'+(n>0?' '+n:'');
+  const nv=window._newVer?' 🔄':'',shN=(avail<74?tiny:sh)+nv;
+  e.innerHTML='<span class="fl"></span><span class="sh"></span>';e.firstChild.textContent=t;e.lastChild.textContent=shN;e.dataset.s=c;e.dataset.full=t;
+  if(avail<999&&e.scrollWidth>e.clientWidth+1)e.lastChild.textContent=tiny+nv;  /* إن لم يتسع النص المختصر نستخدم الأقصر */e.title=lastOk?'آخر تأكيد من خادم السحابة: '+new Date(lastOk).toLocaleTimeString('ar-SA'):'لم يصل أي تأكيد من خادم السحابة بعد'}
  setInterval(stat,1500);addEventListener('offline',stat);window.cloudStat=stat;
  const seen=snap=>{const fc=snap.metadata.fromCache;live=!fc;if(!fc)lastOk=Date.now();stat()};
 
