@@ -854,9 +854,10 @@ else{
 
  async function txDoc(ref,k,id,loc){
   const b=getB(k,id);
-  const res=await runTransaction(db,{maxAttempts:30},async tx=>{const sn=await tx.get(ref);const srv=sn.exists()?sn.data().data:null;
+  /* ترتيب الوسائط حسب Firebase: (db, الدالة, الخيارات) */
+  const res=await runTransaction(db,async tx=>{const sn=await tx.get(ref);const srv=sn.exists()?sn.data().data:null;
    const mj=J(m3(P(b),P(loc),P(srv)));if(mj===srv)return mj;
-   if(mj==null)tx.delete(ref);else tx.set(ref,{data:mj,t:serverTimestamp()});return mj});
+   if(mj==null)tx.delete(ref);else tx.set(ref,{data:mj,t:serverTimestamp()});return mj},{maxAttempts:30});
   setB(k,id,res);lastOk=Date.now();lastErr=null;
   const cur=getL(k,id);const nl=cur===loc?res:J(m3(P(loc),P(cur),P(res)));
   if(k!=='m'||nl!=null)applyL(k,id,nl);
