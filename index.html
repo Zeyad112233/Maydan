@@ -627,10 +627,9 @@ function fixPod(){try{const pd=document.querySelector('.podium');if(!pd)return;c
  if(!cs[0]||!pd.offsetParent)return;
  const base=cs.map(c=>c?c.offsetHeight:0);
  const nat=cs.map(c=>{if(!c)return 0;c.style.setProperty('height','auto','important');const h=c.offsetHeight+6;c.style.removeProperty('height');return h});  /* +6: مسافة تحت اسم الحلقة */
- const step=Math.max(14,Math.round(base[0]*.1)),h=[0,0,0];
- h[2]=cs[2]?Math.max(base[2],nat[2]):0;
- h[1]=cs[1]?Math.max(base[1],nat[1],h[2]+step):0;
- h[0]=Math.max(base[0],nat[0],h[1]+step);
+ /* فرق متساوٍ وواضح: الأول 100% والثاني 86% والثالث 72% — وإن احتاج أي مركز طولًا أكبر لاسم طويل تكبر الثلاثة معًا بنفس النسبة */
+ const RT=[1,.86,.72];const H1=Math.ceil(Math.max(base[0],...cs.map((c,i)=>c?nat[i]/RT[i]:0)));
+ const h=RT.map(r=>Math.round(H1*r));
  cs.forEach((c,i)=>c&&c.style.setProperty('height',h[i]+'px','important'));
  const need=h[0]+parseFloat(getComputedStyle(pd).paddingTop||0);if(need>pd.clientHeight)pd.style.setProperty('min-height',Math.ceil(need)+'px')}catch(e){console.error(e)}}
 {const _render=render;render=function(){const r=_render.apply(this,arguments);fixPod();return r}}
@@ -851,14 +850,17 @@ else{
   e.innerHTML='<span class="fl"></span><span class="sh"></span>';e.firstChild.textContent=t;e.lastChild.textContent=shN;e.dataset.s=c;e.dataset.full=t;
   if(avail<999&&e.scrollWidth>e.clientWidth+1)e.lastChild.textContent=tiny+nv;  /* إن لم يتسع النص المختصر نستخدم الأقصر */
   /* اللابتوب والآيباد وغيرها: العلامة أسفل زر ملء الشاشة مباشرة؛ النص الكامل إن اتسع المكان، وإلا المختصر، وإلا الأقصر — بلا تداخل مع العنوان أو التاريخ أو الأزرار */
-  try{const hd=e.parentNode;if(avail===999&&hd){const fs=document.getElementById('fsb'),fv=fs&&fs.offsetParent&&getComputedStyle(fs).display!=='none';
+  const dateTop=e.style.top;
+  try{const hd=e.parentNode;const mob=avail!==999;if(hd){const fs=document.getElementById('fsb'),fv=fs&&fs.offsetParent&&getComputedStyle(fs).display!=='none';
    e.classList.add('up');e.style.bottom='auto';e.style.maxWidth='none';
    e.style.top=(fv?fs.offsetTop+fs.offsetHeight+6:12)+'px';e.style.right=(fv?hd.clientWidth-(fs.offsetLeft+fs.offsetWidth):12)+'px';
    const RR=el=>{const q=document.createRange();q.selectNodeContents(el);return q.getBoundingClientRect()};
    const obs=[document.querySelector('header h1'),document.getElementById('dt'),document.getElementById('org')].filter(x=>x&&x.textContent.trim()).map(RR).concat([...document.querySelectorAll('#modes button,#tg')].map(b=>b.getBoundingClientRect()));
    const hit=()=>{const r=e.getBoundingClientRect();return obs.some(b=>b.width&&!(r.right<=b.left+2||b.right<=r.left+2||r.bottom<=b.top+1||b.bottom<=r.top+1))};
-   e.classList.remove('cmp');if(hit()){e.classList.add('cmp');if(hit())e.lastChild.textContent=tiny+nv}}
-  else if(hd){e.classList.remove('up','cmp');e.style.bottom='';e.style.maxWidth='';e.style.right=''}}catch(x){}e.title=lastOk?'آخر تأكيد من خادم السحابة: '+new Date(lastOk).toLocaleTimeString('ar-SA'):'لم يصل أي تأكيد من خادم السحابة بعد'}
+   if(mob){e.classList.add('cmp');e.lastChild.textContent=sh+nv;if(hit())e.lastChild.textContent=tiny+nv;
+    /* احتياط: إن ضاق المكان حتى عن النص الأقصر نعود لمحاذاة سطر التاريخ */
+    if(hit()){e.classList.remove('up');e.style.maxWidth='';e.style.right='';e.style.bottom='';e.style.top=dateTop}}
+   else{e.classList.remove('cmp');if(hit()){e.classList.add('cmp');if(hit())e.lastChild.textContent=tiny+nv}}}}catch(x){}e.title=lastOk?'آخر تأكيد من خادم السحابة: '+new Date(lastOk).toLocaleTimeString('ar-SA'):'لم يصل أي تأكيد من خادم السحابة بعد'}
  setInterval(stat,1000);window.mdSync=()=>({ready,live,lostAt,lastOk:lastOk?new Date(lastOk).toLocaleTimeString():0,lastErr,pushing,pending:pendingN(),since:Math.round((Date.now()-t0)/1000)+'s'});addEventListener('offline',stat);window.cloudStat=stat;
  const seen=snap=>{const fc=snap.metadata.fromCache;if(fc){if(live)lostAt=Date.now();live=false}else{live=true;lostAt=0;lastOk=Date.now();lastErr=lastErr==='net'?null:lastErr}stat()};
 
