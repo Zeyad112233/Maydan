@@ -112,7 +112,7 @@ body.fit #app{flex:1;min-height:0;display:flex;flex-direction:column}
 .wkc{margin:8px 0;border:1px solid var(--ln);border-radius:14px;padding:10px}.wkc.cur{border-color:var(--pr);background:rgba(11,143,126,.07)}
 #prt{display:none}
 @media print{@page{size:A4;margin:12mm}html,body{height:auto!important;overflow:visible!important;display:block!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body>*:not(#prt){display:none!important}#prt{display:block!important}}
-#cs{position:absolute;bottom:10px;right:24px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:99px;white-space:nowrap}#cs[data-s=err]{background:#d9534f}#cs[data-s=off]{opacity:.7}
+#cs{position:absolute;bottom:10px;right:24px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px;white-space:normal;max-width:calc(100% - 48px);line-height:1.5;cursor:help}#cs[data-s=err]{background:#d9534f;color:#fff}#cs[data-s=wait]{background:#f0ad4e;color:#222}#cs[data-s=ok]{background:rgba(40,167,69,.9);color:#fff}#cs[data-s=off]{opacity:.7}
 #app .card.sc,.snav{width:100%;flex:0 0 100%;max-width:100%;box-sizing:border-box;grid-column:1/-1;display:block}
 #app .card.sc>h2{display:flex}
 .snav{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex!important;gap:6px;overflow-x:auto;white-space:nowrap;margin-bottom:8px}
@@ -170,8 +170,8 @@ if(Array.isArray(d.hist))localStorage.setItem('maydan_hist',JSON.stringify(d.his
 if(d.bakPre)localStorage.setItem('maydan_bak_pre_weeks',d.bakPre);
 if(d.bakWipe)localStorage.setItem('maydan_bak_before_wipe',d.bakWipe);
 if(d.theme)localStorage.setItem('mdth',d.theme);
-localStorage.setItem(mk,String(d.ts));window._seeded=1}catch(e){}})();
-let S;try{S=JSON.parse(localStorage.getItem('maydan'))}catch(e){}
+localStorage.setItem(mk,String(d.ts));localStorage.removeItem('maydan_sync_base');window._seeded=1}catch(e){}})();
+let S;try{window._hadLocal=!!localStorage.getItem('maydan');S=JSON.parse(localStorage.getItem('maydan'))}catch(e){}
 /* نسخة أمان تلقائية لبيانات ما قبل نظام الأسابيع (تُحفظ مرة واحدة قبل أي ترحيل) */
 function preBak(raw){try{if(raw&&!localStorage.getItem('maydan_bak_pre_weeks'))localStorage.setItem('maydan_bak_pre_weeks',raw)}catch(e){}}
 try{const r=localStorage.getItem('maydan');if(r&&S&&S.halaqat&&!S.weeks)preBak(r)}catch(e){}
@@ -297,7 +297,9 @@ function histV(){
  (sl.length?sl.map(e=>`<div class="line" ${e.u?'style="opacity:.6"':''}><div style="flex:1;min-width:180px"><div style="font-weight:700${e.u?';text-decoration:line-through':''}">${esc(e.lb)}</div><div class="mut">${esc(hTm(e.t))}${e.u?' • تم التراجع':''}</div></div><button class="btn ${e.u?'':'g'}" onclick="histOne('${e.id}')">${e.u?'↪ إلغاء التراجع':'↩ تراجع'}</button></div>`).join(''):'<div class="empty">لا توجد تغييرات مسجّلة</div>')+
  (M.length>hLim?`<div class="row" style="justify-content:center;margin-top:8px"><button class="btn g" onclick="hLim+=40;render()">عرض المزيد</button></div>`:'')+
  `<div class="row" style="margin-top:10px"><button class="btn x" onclick="histClear()">مسح السجل</button></div></div>`}
-const save=()=>{try{localStorage.setItem('maydan',JSON.stringify(S))}catch(e){}histRec();if(window.cloudPush)window.cloudPush()};
+/* حفظ البيانات في الجهاز: إن امتلأت الذاكرة نحذف نسخة الأساس الاحتياطية للمزامنة ونعيد المحاولة، فالبيانات أهم */
+function lsSave(){const v=JSON.stringify(S);try{localStorage.setItem('maydan',v)}catch(e){try{localStorage.removeItem('maydan_sync_base');localStorage.setItem('maydan',v)}catch(e2){console.error(e2)}}}
+const save=()=>{lsSave();histRec();if(window.cloudPush)window.cloudPush()};
 if(window._mg){window._mg=0;save()}
 const SEED={"أحمد بن حنبل":["أنس عبده محمد","جواد ناصر الزلمة","حسن ملهم فرحان","خالد تركي باوزير","رائد محمد آدم","سالم ملهم فرحان","سعد محمد الهويمل","سلمان مشعل المبارك","صادق عابد درجان","عبدالرحمن عمار الصهباني","عبدالله محمد شمسان","عمر منصور هوساوي","محمد أحمد حمندوش","محمد تركي باوزير","يزن نور القيوم حمزة"],"ابن الجوزي":["ابراهيم محمد الجمعة","حسان أمين العواضي","حمزة عبده الرخمي","حميد بشير الحلياني","راشد عبدالرحمن بن خنين","عبدالرحمن خالد الجمعة","عبدالرحمن عبدالعزيز الهديب","عبدالرحمن فهد النجار","عبدالملك بن عبدالله العقيل","عبدالملك سعد القحطاني","غنام ماجد العتيبي","محمد عبداللّٰه الكثيري"],"ابن كثير":["إياد بن عبدالرحمن العلوي","بسام عبدالملك الشقير","تركي فهد النجار","حسام سياف قحطان","راكان خالد العتيبي","سعد ابراهيم العشبان","سعود عبدالعزيز النويعم","عبدالمجيد يحيى الحسيني","عبدالملك يحيى الحسيني","عبد الوهاب عبدالله بافضل","فيصل سعود العمر","مازن بن ناصر المحسن","مالك فارس الكثيري","مبارك مشعل المبارك","محمد تركي الجريوي","محمد خالد الموسى","محمد عثمان الضويان","يزيد محمد الشجاعي","يوسف خالد الجمعة"],"الشاطبي":["أحمد عبدالكريم الناطف","أحمد محمود عبدالهادي","اسامة محمد السالم","تركي علي أحمد سلام","حسن عبدالمالك رحمة","خطاب عبدالرقيب علوان","ريان محمد آدم","سعيد رضوان البج","سعيد عبدالرحمن باوزير","سند أحمد هارون","عبدالملك هارون أبو بكر","فادي محمد السالم","فراس طه علي سيف","قصي ناصر الزلمة","قيس حسين الرشيدي","ماهر محمود فضل حق","محمد طه علي سيف","محمد عمار درهم","وائل جمال علي سلام","ورد رضوان البج","وسام عبدالمنعم محمد"],"مالك":["أنس عبدالإله علي الحداد","أوس أنس محمد","امران عبدالرحمن ابرار","أويس أنس محمد","توفيق عبدالمنعم محمد","زياد محمد الجمعة","سطام مشعل المبارك","سلمان عبد الرحمن باوزير","عابد محمد أبو حسن","عبدلعزيز رضوان علي","عبدالرحمن ناصر عثمان","عبدالوهاب سلطان سلطان","عدي قايد مهيوب","علي عابد محمد درجان","فياض أحمد العلاوي","محمد نور خوجة","مصطفى محمد البقلاوي","وسيم جمال علي سلام","يوسف محمود سويفي"],"التلقين":["أنس محمد الأحمد","تميم عبدالكريم محمد","حارث محمد الشجاعي","حمزة بن محمد جانيش","حميدي محمد الأحمد","خالد شمس الدين قنديل","عثمان ملهم فرحان","غيث أسامة يحيى"]};
 function seedMissing(){let n=0;for(const k in SEED){const h=S.halaqat.find(x=>x.name.includes(k));if(!h)continue;SEED[k].forEach(nm=>{if(!h.students.some(st=>st.name===nm)&&!S.halaqat.some(hh=>hh.students.some(st=>st.sn===nm))){h.students.push({id:uid(),name:nm,scores:{},notes:{}});n++}})}return n}
@@ -498,6 +500,7 @@ function doWipe(){
  HL=[];try{localStorage.removeItem('maydan_hist')}catch(e){}
  histSync();HA=0;save();render();toast('تم حذف جميع البيانات')}
 function exportWipeBak(){const r=localStorage.getItem('maydan_bak_before_wipe');if(!r)return toast('لا توجد نسخة');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r],{type:'application/json'}));a.download='maydan_before_wipe.json';a.click()}
+function exportSyncBak(){const r=localStorage.getItem('maydan_bak_pre_sync_fix');if(!r)return toast('لا توجد نسخة');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r],{type:'application/json'}));a.download='maydan_before_sync_fix.json';a.click()}
 function exportPre(){const r=localStorage.getItem('maydan_bak_pre_weeks');if(!r)return toast('لا توجد نسخة قديمة');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r],{type:'application/json'}));a.download='maydan_before_weeks.json';a.click()}
 function exportData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));a.download='maydan_backup.json';a.click()}
 /* ===== حفظ كل البيانات على نسخة احتياطية: نسخ ما يظهر على هذا الجهاز إلى السحابة فينعكس عند كل الأجهزة ===== */
@@ -532,7 +535,7 @@ async function exportHtml(){try{
  a.download='maydan_data_'+n.getFullYear()+'-'+z(n.getMonth()+1)+'-'+z(n.getDate())+'_'+z(n.getHours())+z(n.getMinutes())+'.html';
  document.body.appendChild(a);a.click();a.remove();toast('تم تنزيل ملف HTML بكل البيانات')}catch(e){console.error(e);toast('تعذّر إنشاء الملف')}}
 function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d&&d.halaqat){const nS=d.halaqat.reduce((a,h)=>a+((h.students||[]).length),0),cS=S.halaqat.reduce((a,h)=>a+((h.students||[]).length),0);
-ask('⚠ سيحل هذا الملف ('+d.halaqat.length+' حلقة، '+nS+' طالب) محل بيانات هذا الجهاز وكل السحابة (الحالي: '+S.halaqat.length+' حلقة، '+cS+' طالب)، وتتزامن بقية الأجهزة معه. يُنصح بتصدير نسخة (JSON) من الحالي أولاً. هل تتابع؟',()=>{S=d;try{localStorage.removeItem('maydan_hist')}catch(e2){}save();location.reload()},{red:1,yes:'استيراد واستبدال'})}else toast('ملف غير صالح')}catch(err){toast('ملف غير صالح')}};r.readAsText(f)}
+ask('⚠ سيحل هذا الملف ('+d.halaqat.length+' حلقة، '+nS+' طالب) محل بيانات هذا الجهاز وكل السحابة (الحالي: '+S.halaqat.length+' حلقة، '+cS+' طالب)، وتتزامن بقية الأجهزة معه. يُنصح بتصدير نسخة (JSON) من الحالي أولاً. هل تتابع؟',()=>{S=d;try{localStorage.removeItem('maydan_hist');localStorage.setItem('maydan_force_next','1')}catch(e2){}save();location.reload()},{red:1,yes:'استيراد واستبدال'})}else toast('ملف غير صالح')}catch(err){toast('ملف غير صالح')}};r.readAsText(f)}
 function settingsV(){
  const dm=S.settings.dateMode,op=(v,l)=>`<option value="${v}" ${dm===v?'selected':''}>${l}</option>`;
  let h=`<div class="card"><h2>⚙ تعديل المسميات يدوياً</h2><div class="mut" style="margin-bottom:6px">غيّر أي اسم أو عنوان أو زر في البرنامج. اترك الخانة فارغة لإرجاع الاسم الأصلي.</div>`+
@@ -545,7 +548,7 @@ function settingsV(){
  weekV()+histV()+prV()+colV()+`<div class="card"><h2>الحلقات</h2><div class="mut" style="margin-bottom:6px">خيار «بنود مخصصة» يسري على الأسبوع الحالي «${esc(curWName())}» وما بعده فقط.</div>`+S.halaqat.map(x=>`<div class="line"><input value="${esc(x.name)}" onchange="renH('${x.id}',this.value)" style="flex:1;min-width:160px"><label class="mut"><input type="checkbox" ${x.own?'checked':''} onchange="ownH('${x.id}',this.checked)"> بنود مخصصة</label><span class="mut">${x.students.length} ${esc(T('stuUnit'))}</span><button class="btn x" onclick="delH('${x.id}')">${esc(T('del'))}</button></div>`).join('')+`<div class="row" style="margin-top:10px"><input id="nh" placeholder="اسم حلقة جديدة..." style="flex:1"><button class="btn" onclick="addH()">+ إضافة حلقة</button></div></div>`+
  `<div class="card"><h2>أيام الرصد</h2><div class="mut" style="margin-bottom:6px">التعديل يسري على الأسبوع الحالي «${esc(curWName())}» وما بعده فقط، والأسابيع السابقة تحتفظ بأيامها.</div>`+S.days.map((d,i)=>`<div class="line"><input value="${esc(d.n)}" onchange="renDay(${i},this.value)" style="flex:1"><label class="mut"><input type="checkbox" ${d.on?'checked':''} onchange="togDay(${i},this.checked)"> مفعّل</label><button class="btn x" onclick="delDay(${i})">${esc(T('del'))}</button></div>`).join('')+`<div class="row" style="margin-top:10px"><input id="nd" placeholder="اسم يوم جديد..." style="flex:1"><button class="btn" onclick="addDay()">+ إضافة يوم</button></div></div>`+
  `<div class="card"><h2>أقفال الرموز 🔒</h2>`+lockRow('scores',T('modeS'))+lockRow('rasd',T('modeA'))+lockRow('stats',T('modeT'))+lockRow('items',T('tabItems'))+lockRow('alerts',T('tabAlerts'))+lockRow('set',T('tabSet'))+lockRow('wipe',T('wipeBtn'))+S.halaqat.map(x=>lockRow('h_'+x.id,x.name)).join('')+`</div>`+
- `<div class="card"><h2>نسخة احتياطية</h2><div class="mut" style="margin-bottom:10px">«حفظ كل البيانات على نسخة احتياطية» ينسخ كل ما يظهر على هذا الجهاز إلى السحابة ويحل محل المحفوظ فيها، فينعكس مباشرة على التزامن وعلى كل الأجهزة. «تنزيل ملف HTML» يحفظ نسخة من التطبيق ببياناتها كاملة (حتى ما يخص هذا الجهاز فقط) في ملف.</div><div class="row"><button class="btn" onclick="fullBackup()">☁ حفظ كل البيانات على نسخة احتياطية</button><button class="btn" onclick="exportHtml()">⬇ تنزيل ملف HTML بالبيانات</button><button class="btn g" onclick="exportData()">⬇ تصدير نسخة (JSON)</button><label class="btn g" style="cursor:pointer">⬆ استيراد نسخة<input type="file" accept=".json" hidden onchange="importData(this)"></label><button class="btn g" onclick="restoreNames()">↩ استرجاع الأسماء الأصلية الناقصة</button>${(()=>{try{return localStorage.getItem('maydan_bak_pre_weeks')?'<button class="btn g" onclick="exportPre()">⬇ نسخة ما قبل الأسابيع (أمان)</button>':''}catch(e){return ''}})()}${(()=>{try{return localStorage.getItem('maydan_bak_before_wipe')?'<button class="btn g" onclick="exportWipeBak()">⬇ نسخة ما قبل الحذف (أمان)</button>':''}catch(e){return ''}})()}</div></div>`+
+ `<div class="card"><h2>نسخة احتياطية</h2><div class="mut" style="margin-bottom:10px">«حفظ كل البيانات على نسخة احتياطية» ينسخ كل ما يظهر على هذا الجهاز إلى السحابة ويحل محل المحفوظ فيها، فينعكس مباشرة على التزامن وعلى كل الأجهزة. «تنزيل ملف HTML» يحفظ نسخة من التطبيق ببياناتها كاملة (حتى ما يخص هذا الجهاز فقط) في ملف.</div><div class="row"><button class="btn" onclick="fullBackup()">☁ حفظ كل البيانات على نسخة احتياطية</button><button class="btn" onclick="exportHtml()">⬇ تنزيل ملف HTML بالبيانات</button><button class="btn g" onclick="exportData()">⬇ تصدير نسخة (JSON)</button><label class="btn g" style="cursor:pointer">⬆ استيراد نسخة<input type="file" accept=".json" hidden onchange="importData(this)"></label><button class="btn g" onclick="restoreNames()">↩ استرجاع الأسماء الأصلية الناقصة</button>${(()=>{try{return localStorage.getItem('maydan_bak_pre_weeks')?'<button class="btn g" onclick="exportPre()">⬇ نسخة ما قبل الأسابيع (أمان)</button>':''}catch(e){return ''}})()}${(()=>{try{return localStorage.getItem('maydan_bak_pre_sync_fix')?'<button class="btn g" onclick="exportSyncBak()">⬇ نسخة ما قبل إصلاح المزامنة (أمان)</button>':''}catch(e){return ''}})()}${(()=>{try{return localStorage.getItem('maydan_bak_before_wipe')?'<button class="btn g" onclick="exportWipeBak()">⬇ نسخة ما قبل الحذف (أمان)</button>':''}catch(e){return ''}})()}</div></div>`+
  `<div class="card" style="border:2px solid #d9534f"><h2 style="color:#d9534f">⚠ منطقة الخطر${LKI('wipe')}</h2><div class="mut" style="margin-bottom:8px">يحذف الحلقات والطلاب وكل الدرجات والأسابيع والبنود والأيام والتنبيهات وسجل التغييرات، من الجهاز ومن السحابة. المسميات والإعدادات والأقفال تبقى. يطلب تأكيدين، ورمز القفل إن كان مفعّلًا (من بطاقة «أقفال الرموز»).</div><div class="row"><button class="btn x" onclick="wipeAll()">${esc(T('wipeBtn'))}</button></div></div>`;
  return h}
 /* ===== الطباعة وملف PDF ===== */
@@ -594,7 +597,7 @@ function tick(){if(mode==='t'){if(!F('autoSt')||document.querySelector('.ovl'))r
 
 /* ===== مزامنة Firebase: تطبيق التغييرات القادمة من السحابة ===== */
 window._ord=[];window._rp=0;
-function cloudBusy(){const a=document.activeElement;return !!document.querySelector('.ovl')||(a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName))}
+function cloudBusy(){const a=document.activeElement;return !!document.querySelector('.ovl')||(a&&a.id!=='q'&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName))}
 function cloudApply(batch,reset){
  if(reset)S.halaqat=[];
  batch.forEach(x=>{
@@ -608,14 +611,20 @@ function cloudApply(batch,reset){
  const keep={};S.halaqat.forEach(h=>{const k=dk(h);if(!keep[k]||wt(h)>wt(keep[k]))keep[k]=h});
  const nb=S.halaqat.length;S.halaqat=S.halaqat.filter(h=>keep[dk(h)]===h);
  if(!S.weeks)try{preBak(JSON.stringify(S))}catch(e){}
- norm();try{localStorage.setItem('maydan',JSON.stringify(S))}catch(e){}
+ norm();lsSave();
  histSync();
  if(S.halaqat.length!==nb||window._mg){window._mg=0;setTimeout(()=>{window.cloudPush&&window.cloudPush()},0)}
  if(tab!=='set'&&tab!=='items'&&tab!=='alerts'&&!H(tab))tab=S.halaqat[0]?S.halaqat[0].id:'set';
  timer();
  if(cloudBusy()){window._rp=1;return}
  render()}
-setInterval(()=>{if(window._rp&&!cloudBusy()){window._rp=0;render()}},1200);
+setInterval(()=>{if(window._rp&&!cloudBusy()){window._rp=0;render()}},500);
+/* كشف إصدار أحدث من الموقع (بعد رفع ملف جديد على GitHub): تظهر إشارة في علامة السحابة للتحديث بضغطة */
+(function(){if(!/^https?:/.test(location.protocol))return;let v0=null;
+ const hs=x=>{let h=0;for(let i=0;i<x.length;i++)h=(h*31+x.charCodeAt(i))|0;return x.length+':'+h};
+ const ck=async()=>{try{const r=await fetch(location.href.split('#')[0],{cache:'no-store'});if(!r.ok)return;const v=hs(await r.text());
+  if(v0==null)v0=v;else if(v!==v0){window._newVer=1;window.cloudStat&&window.cloudStat()}}catch(e){}};
+ ck();setInterval(ck,120000)})();
 HA=0;histSync();
 timer();render();if(window._seeded){window._seeded=0;toast('تم تحميل البيانات من ملف النسخة')}setInterval(()=>{$('dt').textContent=dateText()},60000);
 </script>
@@ -746,7 +755,7 @@ const firebaseConfig = {
 };
 /* ================================================================== */
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,collection,onSnapshot,setDoc,deleteDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,collection,onSnapshot,setDoc,deleteDoc,serverTimestamp,runTransaction} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const st=(t,c)=>{const e=document.getElementById('cs');if(e){e.textContent=t;e.dataset.s=c}};
 if(/PASTE/.test(firebaseConfig.apiKey)){st('☁ غير مفعّل (يعمل محليًا)','off')}
@@ -754,64 +763,151 @@ else{
  const app=initializeApp(firebaseConfig);
  let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){db=initializeFirestore(app,{})}
  const metaRef=doc(db,'maydan_meta','main'),hCol=collection(db,'maydan_halaqat');
- const sync={meta:null,h:{}};let ready=false,tmr=null,queue=[];const init={};
+ /* ===== مزامنة بالدمج: كل جهاز يرفع تغييراته فقط ويدمجها مع ما في السحابة داخل معاملة ذرّية، فلا يمسح رصدُ جهازٍ رصدَ جهازٍ آخر ===== */
+ const sync={meta:null,h:{}};let ready=false,tmr=null,queue=[],pushing=false,retryT=null;const init={};
+ /* حالة الاتصال الفعلية: live = آخر رد جاء من خادم السحابة نفسه (لا من كاش الجهاز)، lastOk = وقت آخر تأكيد من الخادم */
+ let live=false,lastOk=0,lastErr=null,pushT0=0,forcing=false;const t0=Date.now();
+ const BK='maydan_sync_base';let base0=null;try{base0=JSON.parse(localStorage.getItem(BK)||'null')}catch(e){}
+ const saveBase=()=>{try{localStorage.setItem(BK,JSON.stringify({m:sync.meta,h:sync.h}))}catch(e){try{localStorage.removeItem(BK)}catch(e2){}}};
  const split=()=>{const {halaqat,...rest}=S;rest.order=halaqat.map(h=>h.id);
   return{meta:JSON.stringify(rest),h:Object.fromEntries(halaqat.map(h=>[h.id,JSON.stringify(h)]))}};
- const onErr=e=>{console.error(e);st(e&&e.code==='permission-denied'?'⚠ الصلاحيات (Rules)':'⚠ خطأ اتصال','err')};
+ const BUSY=['aborted','failed-precondition','resource-exhausted','deadline-exceeded'];
+ const onErr=e=>{console.error(e);lastErr=e&&e.code==='permission-denied'?'perm':(e&&BUSY.includes(e.code)&&navigator.onLine!==false&&live)?'busy':'net';stat()};
+ const P=s=>s==null?undefined:JSON.parse(s),J=v=>v===undefined?null:JSON.stringify(v);
+ const isO=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+ const cj=v=>Array.isArray(v)?'['+v.map(cj).join(',')+']':isO(v)?'{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+cj(v[k])).join(',')+'}':JSON.stringify(v);
+ const eq=(a,b)=>a===b||(a!==undefined&&b!==undefined&&cj(a)===cj(b));
+ const idArr=a=>Array.isArray(a)&&a.every(x=>isO(x)&&x.id!=null);
+ /* دمج ثلاثي: الأساس (آخر نسخة مؤكدة من السحابة) + تعديلات هذا الجهاز + تعديلات السحابة */
+ function m3(b,l,r,pr,kd){
+  if(eq(l,r))return l;if(kd&&l===undefined)return r;if(eq(b,l))return r;if(eq(b,r))return l;
+  if(l===undefined)return r;if(r===undefined)return l;
+  if(isO(l)&&isO(r)){const bo=isO(b)?b:{},o={};for(const k of new Set([...Object.keys(r),...Object.keys(l)])){const v=m3(bo[k],l[k],r[k],pr,kd);if(v!==undefined)o[k]=v}return o}
+  if(idArr(l)&&idArr(r)){const ba=idArr(b)?b:[],mp=a=>new Map(a.map(x=>[x.id,x])),bm=mp(ba),lm=mp(l),rm=mp(r);
+   const io=a=>a.map(x=>x.id),first=eq(io(ba),io(r))?l:r;
+   const ids=[...new Set([...io(first),...io(l),...io(r)])],out=[];
+   for(const id of ids){const v=m3(bm.get(id),lm.get(id),rm.get(id),pr,kd);if(v!==undefined)out.push(v)}return out}
+  return pr?r:l}
+ const getB=(k,id)=>(k==='m'?sync.meta:sync.h[id])??null;
+ const setB=(k,id,s)=>{if(k==='m')sync.meta=s;else if(s==null)delete sync.h[id];else sync.h[id]=s};
+ const getL=(k,id)=>{const c=split();return (k==='m'?c.meta:c.h[id])??null};
+ const applyL=(k,id,s)=>{if(s!==getL(k,id))cloudApply([{k,id,s}])};
+ const same=(a,b)=>a===b||(a!=null&&b!=null&&cj(JSON.parse(a))===cj(JSON.parse(b)));
+ /* عدد التعديلات (درجة/اسم/بند…) الموجودة في هذا الجهاز ولم يؤكد خادم السحابة استلامها */
+ const nums=x=>typeof x==='number'?1:(x&&typeof x==='object')?Object.values(x).reduce((a,v)=>a+nums(v),0):0;
+ function cnt(b,l){if(eq(b,l))return 0;
+  if(b===undefined||l===undefined)return Math.max(1,nums(b===undefined?l:b));
+  if(isO(b)&&isO(l)){let n=0;for(const k of new Set([...Object.keys(b),...Object.keys(l)]))n+=cnt(b[k],l[k]);return n}
+  if(idArr(b)&&idArr(l)){const bm=new Map(b.map(x=>[x.id,x])),lm=new Map(l.map(x=>[x.id,x]));let n=0;
+   for(const id of new Set([...bm.keys(),...lm.keys()]))n+=cnt(bm.get(id),lm.get(id));return n||1}
+  return 1}
+ function pendingN(){let bm,bh;if(ready){bm=sync.meta;bh=sync.h}else if(base0){bm=base0.m;bh=base0.h||{}}else return -1;
+  const c=split();let n=0;
+  if(!same(c.meta,bm)){const a=P(bm)||{},b=P(c.meta)||{};delete a.order;delete b.order;n+=cnt(a,b)}
+  for(const id of new Set([...Object.keys(c.h),...Object.keys(bh)]))if(!same(c.h[id]??null,bh[id]??null))n+=cnt(P(bh[id]),P(c.h[id]));
+  return n}
+ const nT=n=>n===1?'تعديل واحد':n===2?'تعديلان':n<=10?n+' تعديلات':n+' تعديلًا';
+ const hm=t=>new Date(t).toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
+ /* علامة السحابة: لا تقول «متزامن» إلا إذا كان الخادم متصلًا فعلًا وأكد استلام كل ما في هذا الجهاز */
+ function stat(){const e=document.getElementById('cs');if(!e)return;let n=0;try{n=pendingN()}catch(x){n=-1}
+  const on=navigator.onLine!==false,conn=on&&live,last=lastOk?' (آخر تأكيد '+hm(lastOk)+')':'',pend=n>0?' — لم يُرفع '+nT(n):n<0?' — ما رُصد هنا محفوظ في الجهاز':'';
+  let t,c;
+  if(lastErr==='perm'){t='⚠ السحابة ترفض الحفظ (الصلاحيات)'+pend;c='err'}
+  else if(!ready){if(Date.now()-t0<15000&&on){t='⏳ جارٍ الاتصال بالسحابة…';c='wait'}else{t='⚠ غير متصل بالسحابة'+pend;c='err'}}
+  else if(!conn||lastErr==='net'){t='⚠ غير متصل بالسحابة'+(n>0?pend:' — لن تصلك تحديثات الأجهزة الأخرى')+last;c='err'}
+  else if(n>0||pushing||tmr||forcing){if((pushing||forcing)&&Date.now()-pushT0>15000){t='⚠ الرفع متعثر'+pend+last;c='err'}else{t='⏳ جارٍ رفع '+(n>0?nT(n):'التعديلات')+'…';c='wait'}}
+  else{t='☁ متزامن ✓';c='ok'}
+  if(window._newVer){t+=' • 🔄 يوجد إصدار أحدث، اضغط هنا للتحديث';if(c==='ok')c='wait';e.onclick=()=>{if(n>0&&!confirm('يوجد رصد لم يُرفع بعد، وسيبقى محفوظًا في الجهاز. تحديث الآن؟'))return;location.reload()}}
+  e.textContent=t;e.dataset.s=c;e.title=lastOk?'آخر تأكيد من خادم السحابة: '+new Date(lastOk).toLocaleTimeString('ar-SA'):'لم يصل أي تأكيد من خادم السحابة بعد'}
+ setInterval(stat,1500);addEventListener('offline',stat);window.cloudStat=stat;
+ const seen=snap=>{const fc=snap.metadata.fromCache;live=!fc;if(!fc)lastOk=Date.now();stat()};
 
- async function push(){
-  tmr=null;if(!ready)return;const c=split(),jobs=[];
-  if(c.meta!==sync.meta){sync.meta=c.meta;jobs.push(setDoc(metaRef,{data:c.meta,t:serverTimestamp()}))}
-  for(const id in c.h){if(c.h[id]!==sync.h[id]){sync.h[id]=c.h[id];jobs.push(setDoc(doc(hCol,id),{data:c.h[id],t:serverTimestamp()}))}}
-  for(const id in sync.h){if(!(id in c.h)){delete sync.h[id];jobs.push(deleteDoc(doc(hCol,id)))}}
-  try{await Promise.all(jobs);st('☁ متزامن','ok')}catch(e){onErr(e)}
-  const q=queue;queue=[];q.forEach(x=>incoming(x.k,x.id,x.s));
+ async function txDoc(ref,k,id,loc){
+  const b=getB(k,id);
+  const res=await runTransaction(db,{maxAttempts:30},async tx=>{const sn=await tx.get(ref);const srv=sn.exists()?sn.data().data:null;
+   const mj=J(m3(P(b),P(loc),P(srv)));if(mj===srv)return mj;
+   if(mj==null)tx.delete(ref);else tx.set(ref,{data:mj,t:serverTimestamp()});return mj});
+  setB(k,id,res);lastOk=Date.now();lastErr=null;
+  const cur=getL(k,id);const nl=cur===loc?res:J(m3(P(loc),P(cur),P(res)));
+  if(k!=='m'||nl!=null)applyL(k,id,nl);
  }
- window.cloudPush=()=>{if(!ready)return;st('⏳ جارٍ الحفظ…','wait');clearTimeout(tmr);tmr=setTimeout(push,500)};
+ async function push(){
+  tmr=null;if(!ready)return;if(pushing){tmr=setTimeout(push,300);return}
+  pushing=true;pushT0=Date.now();clearTimeout(retryT);let ok=true;stat();
+  try{const c=split(),jobs=[];
+   if(!same(c.meta,sync.meta))jobs.push(txDoc(metaRef,'m','main',c.meta));
+   for(const id in c.h)if(!same(c.h[id],sync.h[id]??null))jobs.push(txDoc(doc(hCol,id),'h',id,c.h[id]));
+   for(const id of Object.keys(sync.h))if(!(id in c.h))jobs.push(txDoc(doc(hCol,id),'h',id,null));
+   const rs=await Promise.allSettled(jobs);const bad=rs.find(x=>x.status==='rejected');
+   if(bad){ok=false;onErr(bad.reason);retryT=setTimeout(()=>window.cloudPush(),lastErr==='busy'?300+Math.random()*700:5000)}
+  }finally{pushing=false;saveBase();stat()}
+  const q=queue;queue=[];q.forEach(x=>incoming(x.k,x.id,x.s));
+  if(ok){const c=split();const dirty=!same(c.meta,sync.meta)||Object.keys(c.h).some(id=>!same(c.h[id],sync.h[id]??null))||Object.keys(sync.h).some(id=>!(id in c.h));
+   if(dirty)window.cloudPush();else stat()}
+ }
+ window.cloudPush=()=>{if(!ready){stat();return}clearTimeout(tmr);tmr=setTimeout(push,300);stat()};
+ addEventListener('online',()=>{lastErr=null;window.cloudPush()});
 
  function incoming(k,id,s){
-  const cur=k==='m'?sync.meta:sync.h[id];
-  if(s===cur||(s==null&&cur==null))return;
-  if(tmr){queue.push({k,id,s});return}
-  if(k==='m')sync.meta=s;else if(s==null)delete sync.h[id];else sync.h[id]=s;
-  cloudApply([{k,id,s}]);st('☁ متزامن','ok');
+  if(pushing){queue.push({k,id,s});return}
+  const b=getB(k,id);if(s===b)return;
+  const loc=getL(k,id),mj=J(m3(P(b),P(loc),P(s)));
+  setB(k,id,s);saveBase();
+  if(k!=='m'||mj!=null)applyL(k,id,mj);
+  if(mj!==s)window.cloudPush();else stat();
  }
  function tryInit(){
   if(!(init.mOk&&init.hOk)||ready)return;
-  const ids=Object.keys(init.h);
-  if(init.m==null&&!ids.length){ready=true;push();return}   // قاعدة فارغة: نرفع البيانات الحالية
-  const batch=[];if(init.m!=null){batch.push({k:'m',id:'main',s:init.m});sync.meta=init.m}
-  ids.forEach(id=>{batch.push({k:'h',id,s:init.h[id]});sync.h[id]=init.h[id]});
-  cloudApply(batch,true);ready=true;st('☁ متزامن','ok');window.cloudPush();
+  const c=split(),srvIds=Object.keys(init.h);
+  if(init.m==null&&!srvIds.length){ready=true;push();return}
+  /* بعد «استيراد واستبدال»: ملف الاستيراد يحل محل السحابة كما وعدت الرسالة */
+  let force=false;try{force=localStorage.getItem('maydan_force_next')==='1'}catch(e){}
+  if(force){sync.meta=init.m;sync.h={};srvIds.forEach(id=>sync.h[id]=init.h[id]);ready=true;
+   window.cloudForce().then(()=>{try{localStorage.removeItem('maydan_force_next')}catch(e){}},e=>console.error(e));return}   // قاعدة فارغة: نرفع البيانات الحالية
+  /* أول تشغيل بهذا الإصدار (لا توجد نسخة أساس): جمعٌ لكل ما في الجهاز وكل ما في السحابة دون حذف أي اسم أو درجة،
+     وعند اختلاف القيمة نفسها تُعتمد قيمة السحابة. وتُحفظ قبلها نسخة أمان من الجهاز ومن السحابة */
+  /* جهاز جديد أو بلا أي رصد: لا شيء يُحفظ منه، فتؤخذ بيانات السحابة كما هي (حتى لا تتكرر البنود الافتراضية) */
+  const hasSc=S.halaqat.some(h=>(h.students||[]).some(st=>nums(st.scores||{})>0));
+  if(!base0&&(!window._hadLocal||!hasSc))base0={m:c.meta,h:c.h};
+  const first=!base0;
+  if(first)try{if(!localStorage.getItem('maydan_bak_pre_sync_fix'))localStorage.setItem('maydan_bak_pre_sync_fix',JSON.stringify({t:Date.now(),local:S,cloud:{m:init.m,h:init.h}}))}catch(e){}
+  const bm=first?undefined:P(base0.m),bh=first?{}:(base0.h||{});
+  const batch=[];
+  /* عند فتح الصفحة: لا نحذف من السحابة شيئًا لمجرد غيابه عن نسخة الجهاز (قد تكون نسخة الجهاز أقدم، مثلًا عند فتح تبويبين) */
+  const mm=J(m3(bm,P(c.meta),P(init.m),first,true));if(mm!=null)batch.push({k:'m',id:'main',s:mm});
+  const ids=[...new Set([...(init.m?(JSON.parse(init.m).order||[]):[]),...srvIds,...Object.keys(c.h)])];
+  ids.forEach(id=>{const v=J(m3(first?undefined:P(bh[id]),P(c.h[id]),P(init.h[id]),first,true));if(v!=null)batch.push({k:'h',id,s:v})});
+  sync.meta=init.m;sync.h={};srvIds.forEach(id=>sync.h[id]=init.h[id]);saveBase();
+  cloudApply(batch,true);ready=true;window.cloudPush();
  }
 
  window.cloudForce=async()=>{
   if(!ready)throw new Error('not ready');
+  while(pushing)await new Promise(r=>setTimeout(r,200));
   clearTimeout(tmr);tmr=null;queue=[];
   const c=split(),jobs=[],ts=Date.now();
-  st('⏳ جارٍ الحفظ…','wait');
+  forcing=true;pushT0=Date.now();stat();
   sync.meta=c.meta;jobs.push(setDoc(metaRef,{data:c.meta,t:serverTimestamp()}));
   for(const id in c.h){sync.h[id]=c.h[id];jobs.push(setDoc(doc(hCol,id),{data:c.h[id],t:serverTimestamp()}))}
   for(const id of Object.keys(sync.h)){if(!(id in c.h)){delete sync.h[id];jobs.push(deleteDoc(doc(hCol,id)))}}
   const p=devPack();
   for(const k in p){jobs.push(setDoc(doc(db,'maydan_meta','dev_'+k),{data:JSON.stringify({ts,v:p[k]}),t:serverTimestamp()}));try{localStorage.setItem('maydan_dev_ts_'+k,String(ts))}catch(e){}}
-  try{await Promise.all(jobs);st('☁ متزامن','ok')}catch(e){onErr(e);throw e}
+  try{await Promise.all(jobs);saveBase();lastOk=Date.now();lastErr=null}catch(e){onErr(e);throw e}finally{forcing=false;stat()}
  };
  ['hist','maydan_bak_pre_weeks','maydan_bak_before_wipe'].forEach(k=>onSnapshot(doc(db,'maydan_meta','dev_'+k),snap=>{
   if(!snap.exists()||snap.metadata.hasPendingWrites)return;
   try{const o=JSON.parse(snap.data().data),mine=+localStorage.getItem('maydan_dev_ts_'+k)||0;
    if(o&&o.ts>mine&&window.devApply)devApply(k,o.v,o.ts)}catch(e){}},()=>{}));
- st('⏳ جارٍ الاتصال…','wait');
- setTimeout(()=>{if(!ready)st('⚠ لا اتصال بالسحابة — لن يُرفع شيء حتى يتأكد الاتصال','err')},15000);
+ stat();
  /* إصلاح: لا نعتبر القاعدة «فارغة» ولا نرفع شيئًا قبل وصول رد مؤكَّد من خادم السحابة (وليس من كاش الجهاز) */
  onSnapshot(metaRef,{includeMetadataChanges:true},snap=>{
-  const s=snap.exists()?snap.data().data:null;
+  const s=snap.exists()?snap.data().data:null;seen(snap);
   if(!ready){if(snap.metadata.fromCache)return;init.m=s;init.mOk=true;tryInit();return}
-  if(snap.metadata.hasPendingWrites)return;incoming('m','main',s)},onErr);
- onSnapshot(hCol,{includeMetadataChanges:true},snap=>{
+  if(snap.metadata.hasPendingWrites)return;incoming('m','main',s)},e=>{live=false;onErr(e)});
+ onSnapshot(hCol,{includeMetadataChanges:true},snap=>{seen(snap);
   if(!ready){if(snap.metadata.fromCache)return;if(!init.hOk){init.h={};snap.docs.forEach(d=>init.h[d.id]=d.data().data);init.hOk=true;tryInit()}return}
   snap.docChanges().forEach(c=>{if(c.doc.metadata.hasPendingWrites)return;
-   incoming('h',c.doc.id,c.type==='removed'?null:c.doc.data().data)})},onErr);
+   incoming('h',c.doc.id,c.type==='removed'?null:c.doc.data().data)})},e=>{live=false;onErr(e)});
 }
 </script>
 </body></html>
